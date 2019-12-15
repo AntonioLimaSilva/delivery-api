@@ -1,6 +1,7 @@
 package br.com.luciano.delivery.domain.service;
 
 import br.com.luciano.delivery.domain.exception.EntidadeEmUsoException;
+import br.com.luciano.delivery.domain.exception.EstadoNaoEncontradoException;
 import br.com.luciano.delivery.domain.repository.CidadeRepository;
 import br.com.luciano.delivery.domain.exception.EntidadeNaoEncontradaException;
 import br.com.luciano.delivery.domain.exception.NegocioException;
@@ -15,7 +16,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class CadastroCidadeService {
 
-	public static final String MSG_ENTIDADE_NAO_ENCONTRADA = "Não existe um cadastro de cidade com código %d";
+	private static final String MSG_ENTIDADE_NAO_ENCONTRADA = "Não existe um cadastro de cidade com código %d";
+	private static final String MSG_CIDADE = "Cidade de código %d não pode ser removida, pois está em uso";
 
 	@Autowired
 	private CidadeRepository cidadeRepository;
@@ -29,8 +31,8 @@ public class CadastroCidadeService {
 		Estado estado;
 		try {
 			estado = cadastroEstadoService.buscarPorId(estadoId);
-		} catch (EntidadeNaoEncontradaException ex) {
-			throw new NegocioException(ex.getMessage());
+		} catch (EstadoNaoEncontradoException ex) {
+			throw new NegocioException(ex.getMessage(), ex);
 		}
 		
 		cidade.setEstado(estado);
@@ -48,7 +50,7 @@ public class CadastroCidadeService {
 		
 		} catch (DataIntegrityViolationException e) {
 			throw new EntidadeEmUsoException(
-				String.format("Cidade de código %d não pode ser removida, pois está em uso", cidadeId));
+				String.format(MSG_CIDADE, cidadeId));
 		}
 	}
 

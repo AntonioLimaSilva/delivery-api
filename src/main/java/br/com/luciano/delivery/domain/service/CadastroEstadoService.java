@@ -1,6 +1,7 @@
 package br.com.luciano.delivery.domain.service;
 
 import br.com.luciano.delivery.domain.exception.EntidadeEmUsoException;
+import br.com.luciano.delivery.domain.exception.EstadoNaoEncontradoException;
 import br.com.luciano.delivery.domain.repository.EstadoRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,8 @@ import br.com.luciano.delivery.domain.model.Estado;
 @Service
 public class CadastroEstadoService {
 
-	public static final String ENTIDADE_NAO_ENCONTRADA = "Não existe um cadastro de estado com código %d";
+	private static final String MSG_ESTADO_NAO_REMOVIDO = "Estado de código %d não pode ser removido, pois está em uso";
+
 	@Autowired
 	private EstadoRepository estadoRepository;
 	
@@ -27,18 +29,17 @@ public class CadastroEstadoService {
 			estadoRepository.deleteById(estadoId);
 			
 		} catch (EmptyResultDataAccessException e) {
-			throw new EntidadeNaoEncontradaException(
-				String.format(ENTIDADE_NAO_ENCONTRADA, estadoId));
+			throw new EstadoNaoEncontradoException(estadoId);
 		
 		} catch (DataIntegrityViolationException e) {
 			throw new EntidadeEmUsoException(
-				String.format("Estado de código %d não pode ser removido, pois está em uso", estadoId));
+				String.format(MSG_ESTADO_NAO_REMOVIDO, estadoId));
 		}
 	}
 
     public Estado buscarPorId(Long estadoId) {
 		return this.estadoRepository.findById(estadoId)
-				.orElseThrow(() -> new EntidadeNaoEncontradaException(String.format(ENTIDADE_NAO_ENCONTRADA, estadoId)));
+				.orElseThrow(() -> new EstadoNaoEncontradoException(estadoId));
     }
 
 	public Estado salvar(Long estadoId, Estado estado) {

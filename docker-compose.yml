@@ -9,4 +9,4 @@ services:
     ports:
     - "3306:3306"
     volumes:
-    - ./Users/luciano/Programs:/var/lib/mysql
+    - ./mysql/lib:/var/lib/mysql

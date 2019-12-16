@@ -1,19 +1,18 @@
 package br.com.luciano.delivery.domain.service;
 
-import br.com.luciano.delivery.domain.repository.RestauranteRepository;
+import br.com.luciano.delivery.domain.exception.CozinhaNaoEncontradaException;
+import br.com.luciano.delivery.domain.exception.EntidadeNaoEncontradaException;
 import br.com.luciano.delivery.domain.exception.NegocioException;
+import br.com.luciano.delivery.domain.exception.RestauranteNaoEncontradoException;
+import br.com.luciano.delivery.domain.model.Cozinha;
+import br.com.luciano.delivery.domain.model.Restaurante;
+import br.com.luciano.delivery.domain.repository.RestauranteRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.luciano.delivery.domain.exception.EntidadeNaoEncontradaException;
-import br.com.luciano.delivery.domain.model.Cozinha;
-import br.com.luciano.delivery.domain.model.Restaurante;
-
 @Service
 public class CadastroRestauranteService {
-
-	private static final String ENTIDADE_NAO_ENCONTRO = "Restaurante não encontrado com id: %d";
 
 	@Autowired
 	private RestauranteRepository restauranteRepository;
@@ -27,8 +26,8 @@ public class CadastroRestauranteService {
 		Cozinha cozinha;
 		try {
 			cozinha = cadastroCozinhaService.buscarPorId(cozinhaId);
-		} catch (EntidadeNaoEncontradaException ex) {
-			throw new NegocioException(ex.getMessage());
+		} catch (CozinhaNaoEncontradaException ex) {
+			throw new NegocioException(ex.getMessage(), ex);
 		}
 		restaurante.setCozinha(cozinha);
 		
@@ -36,7 +35,7 @@ public class CadastroRestauranteService {
 	}
 
     public Restaurante buscarPorId(Long restauranteId) {
-		return this.restauranteRepository.findById(restauranteId).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format(ENTIDADE_NAO_ENCONTRO, restauranteId)));
+		return this.restauranteRepository.findById(restauranteId).orElseThrow(() -> new RestauranteNaoEncontradoException(restauranteId));
     }
 
 	public Restaurante salvar(Long restauranteId, Restaurante restaurante) {

@@ -1,12 +1,9 @@
 package br.com.luciano.delivery.domain.service;
 
-import br.com.luciano.delivery.domain.exception.EntidadeEmUsoException;
-import br.com.luciano.delivery.domain.exception.EstadoNaoEncontradoException;
-import br.com.luciano.delivery.domain.repository.CidadeRepository;
-import br.com.luciano.delivery.domain.exception.EntidadeNaoEncontradaException;
-import br.com.luciano.delivery.domain.exception.NegocioException;
+import br.com.luciano.delivery.domain.exception.*;
 import br.com.luciano.delivery.domain.model.Cidade;
 import br.com.luciano.delivery.domain.model.Estado;
+import br.com.luciano.delivery.domain.repository.CidadeRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -45,8 +42,7 @@ public class CadastroCidadeService {
 			cidadeRepository.deleteById(cidadeId);
 			
 		} catch (EmptyResultDataAccessException e) {
-			throw new EntidadeNaoEncontradaException(
-				String.format(MSG_ENTIDADE_NAO_ENCONTRADA, cidadeId));
+			throw new CidadeNaoEncontradaException(cidadeId);
 		
 		} catch (DataIntegrityViolationException e) {
 			throw new EntidadeEmUsoException(
@@ -56,7 +52,7 @@ public class CadastroCidadeService {
 
     public Cidade buscarPorId(Long cidadeId) {
 		return this.cidadeRepository.findById(cidadeId)
-				.orElseThrow(() -> new EntidadeNaoEncontradaException(String.format(MSG_ENTIDADE_NAO_ENCONTRADA, cidadeId)));
+				.orElseThrow(() -> new CidadeNaoEncontradaException(cidadeId));
     }
 
 	public Cidade salvar(Long cidadeId, Cidade cidade) {

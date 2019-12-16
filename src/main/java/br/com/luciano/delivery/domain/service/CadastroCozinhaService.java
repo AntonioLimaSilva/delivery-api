@@ -1,7 +1,8 @@
 package br.com.luciano.delivery.domain.service;
 
+import br.com.luciano.delivery.domain.exception.CozinhaNaoEncontradaException;
 import br.com.luciano.delivery.domain.exception.EntidadeEmUsoException;
-import br.com.luciano.delivery.domain.exception.EntidadeNaoEncontradaException;
+import br.com.luciano.delivery.domain.model.Cozinha;
 import br.com.luciano.delivery.domain.repository.CozinhaRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,12 +10,10 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import br.com.luciano.delivery.domain.model.Cozinha;
-
 @Service
 public class CadastroCozinhaService {
 
-	private static final String MSG_ENTIDADE_NAO_ENCONTRADA = "Não existe um cadastro de cozinha com código %d";
+	private static final String MSG_COZINHA_NAO_REMOVIDO = "Cozinha de código %d não pode ser removida, pois está em uso";
 
 	@Autowired
 	private CozinhaRepository cozinhaRepository;
@@ -34,17 +33,16 @@ public class CadastroCozinhaService {
 			cozinhaRepository.deleteById(cozinhaId);
 			
 		} catch (EmptyResultDataAccessException e) {
-			throw new EntidadeNaoEncontradaException(
-				String.format(MSG_ENTIDADE_NAO_ENCONTRADA, cozinhaId));
+			throw new CozinhaNaoEncontradaException(cozinhaId);
 		
 		} catch (DataIntegrityViolationException e) {
 			throw new EntidadeEmUsoException(
-				String.format("Cozinha de código %d não pode ser removida, pois está em uso", cozinhaId));
+				String.format(MSG_COZINHA_NAO_REMOVIDO, cozinhaId));
 		}
 	}
 
 	public Cozinha buscarPorId(Long cozinhaId) {
-		return cozinhaRepository.findById(cozinhaId).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format(MSG_ENTIDADE_NAO_ENCONTRADA, cozinhaId)));
+		return cozinhaRepository.findById(cozinhaId).orElseThrow(() -> new CozinhaNaoEncontradaException(cozinhaId));
 	}
 
 }

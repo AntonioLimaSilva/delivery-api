@@ -2,15 +2,13 @@ package br.com.luciano.delivery.domain.service;
 
 import br.com.luciano.delivery.domain.exception.EntidadeEmUsoException;
 import br.com.luciano.delivery.domain.exception.EstadoNaoEncontradoException;
+import br.com.luciano.delivery.domain.model.Estado;
 import br.com.luciano.delivery.domain.repository.EstadoRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-
-import br.com.luciano.delivery.domain.exception.EntidadeNaoEncontradaException;
-import br.com.luciano.delivery.domain.model.Estado;
 
 @Service
 public class CadastroEstadoService {

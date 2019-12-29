@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +36,7 @@ public class RestauranteController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<Restaurante> adicionar(@RequestBody Restaurante restaurante) {
+	public ResponseEntity<Restaurante> adicionar(@RequestBody @Valid Restaurante restaurante) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(cadastroRestaurante.salvar(restaurante));
 	}
 	

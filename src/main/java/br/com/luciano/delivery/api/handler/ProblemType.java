@@ -5,7 +5,13 @@ import lombok.Getter;
 @Getter
 public enum ProblemType {
 
-    ENTIDADE_NAO_ENCONTRADA("/entidade-nao-encontrada", "Entidade não encontrada");
+    MENSAGEM_INCOMPREENSIVEL("mensagem-incompreensivel", "Mensagem Incompreensível"),
+    RECURSO_NAO_ENCONTRADO("/recurso-nao-encontrado", "Recurso não encontrado"),
+    ENTIDADE_EM_USO("/entidade-em-uso", "Entidade em uso"),
+    ERRO_NEGOCIO("/erro-negocio", "Violação da regra de Negócio"),
+    FORMATO_INVALIDO("/formato-invalido", "Tipo dado inválido"),
+    PROPRIEDADE_DESCONHECIDA("/propriedade-desconhecida", "A propriedade informada não existe"),
+    PARAMETRO_INVALIDO("/parametro-invalido", "O paramêtro informado é inválido");
 
     private final String url;
     private final String title;

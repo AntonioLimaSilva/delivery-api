@@ -3,17 +3,23 @@ package br.com.luciano.delivery.api.handler;
 import br.com.luciano.delivery.domain.exception.EntidadeEmUsoException;
 import br.com.luciano.delivery.domain.exception.EntidadeNaoEncontradaException;
 import br.com.luciano.delivery.domain.exception.NegocioException;
-import br.com.luciano.delivery.domain.exception.RestauranteNaoEncontradoException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,21 +28,62 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(EntidadeEmUsoException.class)
     public ResponseEntity<Object> handleEntidadeEmUsoException(EntidadeEmUsoException ex, WebRequest webRequest) {
-        return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT, webRequest);
+        HttpStatus status = HttpStatus.CONFLICT;
+        Problem problem = createProblemBuilder(status, ProblemType.ENTIDADE_EM_USO, ex.getMessage()).build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, webRequest);
     }
 
     @ExceptionHandler(NegocioException.class)
     public ResponseEntity<Object> handleNegocioException(NegocioException ex, WebRequest webRequest) {
-        return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST, webRequest);
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        Problem problem = createProblemBuilder(status, ProblemType.ERRO_NEGOCIO, ex.getMessage()).build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, webRequest);
     }
 
     @ExceptionHandler(EntidadeNaoEncontradaException.class)
     public ResponseEntity<Object> handleEntidadeNaoEncontradoException(EntidadeNaoEncontradaException ex, WebRequest webRequest) {
         HttpStatus status = HttpStatus.NOT_FOUND;
 
-        Problem problem = createProblemBuilder(status, ProblemType.ENTIDADE_NAO_ENCONTRADA, ex.getMessage()).build();
+        Problem problem = createProblemBuilder(status, ProblemType.RECURSO_NAO_ENCONTRADO, ex.getMessage()).build();
 
-        return handleExceptionInternal(ex, problem, new HttpHeaders(), HttpStatus.BAD_REQUEST, webRequest);
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, webRequest);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        ProblemType type = ProblemType.RECURSO_NAO_ENCONTRADO;
+        String detail = String.format("O recurso '%s' que você tentou acessar, é inexistente", ex.getRequestURL());
+        Problem problem = createProblemBuilder(status, type, detail).build();
+
+        return handleExceptionInternal(ex, problem, headers, status, request);
+    }
+
+    /**
+     * Exceptions expecializadas
+     * @param ex
+     * @param headers
+     * @param status
+     * @param webRequest
+     * @return
+     */
+    @Override
+    public ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers,
+                                                                        HttpStatus status, WebRequest webRequest) {
+        Throwable rootCause = ExceptionUtils.getRootCause(ex);
+
+        if (rootCause instanceof InvalidFormatException) {
+            return handleInvalidFormatException((InvalidFormatException) rootCause, headers, status, webRequest);
+        } else if (rootCause instanceof UnrecognizedPropertyException) {
+            return handleUnrecognizedPropertyException((UnrecognizedPropertyException) rootCause, headers, status, webRequest);
+        }
+
+        ProblemType type = ProblemType.MENSAGEM_INCOMPREENSIVEL;
+        String detail = "O corpo da requisição esta invalído. Verifique erro de sintaxe";
+        Problem problem = createProblemBuilder(status, type, detail).build();
+
+        return handleExceptionInternal(ex, problem, headers, status, webRequest);
     }
 
     @Override
@@ -45,6 +92,15 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 .collect(Collectors.toList());
 
         return super.handleExceptionInternal(ex, problems, headers, status, request);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        if (ex instanceof MethodArgumentTypeMismatchException) {
+            return handleNumberFormatException((MethodArgumentTypeMismatchException) ex, headers, status, request);
+        }
+
+        return super.handleTypeMismatch(ex, headers, status, request);
     }
 
     /**
@@ -72,6 +128,38 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         }
 
         return super.handleExceptionInternal(ex, body, headers, status, request);
+    }
+
+    private ResponseEntity<Object> handleInvalidFormatException(InvalidFormatException ex, HttpHeaders headers, HttpStatus status, WebRequest webRequest) {
+
+        String path = ex.getPath().stream().map(JsonMappingException.Reference::getFieldName).collect(Collectors.joining("."));
+        ProblemType type = ProblemType.FORMATO_INVALIDO;
+        String detail = String.format("A propriedade '%s' recebeu o valor '%s' que é do tipo inválido. " +
+                "Corrija e informe um valor compatível com o tipo %s", path, ex.getValue(), ex.getTargetType().getSimpleName());
+        Problem problem = createProblemBuilder(status, type, detail).build();
+
+        return handleExceptionInternal(ex, problem, headers, status, webRequest);
+    }
+
+    private ResponseEntity<Object> handleUnrecognizedPropertyException(UnrecognizedPropertyException ex, HttpHeaders headers, HttpStatus status, WebRequest webRequest) {
+        ProblemType type = ProblemType.PROPRIEDADE_DESCONHECIDA;
+
+        String path = ex.getPath().stream().map(JsonMappingException.Reference::getFieldName).collect(Collectors.joining("."));
+        String detail = String.format("A propriedade '%s' não existe na classe %s", path, ex.getPathReference());
+        Problem problem = createProblemBuilder(status, type, detail).build();
+
+        return handleExceptionInternal(ex, problem, headers, status, webRequest);
+    }
+
+    private ResponseEntity<Object> handleNumberFormatException(MethodArgumentTypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+        ProblemType type = ProblemType.PARAMETRO_INVALIDO;
+        String detail = String.format("O parâmtro de URL '%s' recebeu o valor '%s', " +
+                "que é de um tipo inválido. Corrija e informe um valor compatível com o tipo '%s'",
+                ex.getName(), ex.getValue(), ex.getRequiredType().getSimpleName());
+        Problem problem = createProblemBuilder(status, type, detail).build();
+
+        return handleExceptionInternal(ex, problem, headers, status, request);
     }
 
     private Problem.ProblemBuilder createProblemBuilder(HttpStatus status, ProblemType type, String detail) {

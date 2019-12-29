@@ -4,9 +4,11 @@ import br.com.luciano.delivery.domain.model.Restaurante;
 import br.com.luciano.delivery.domain.repository.RestauranteRepository;
 import br.com.luciano.delivery.domain.service.CadastroRestauranteService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,19 +58,22 @@ public class RestauranteController {
 
 	private void merge(Map<String, Object> dadosOrigem, Restaurante restauranteDestino) {
 		ObjectMapper objectMapper = new ObjectMapper();
-		Restaurante restauranteOrigem = objectMapper.convertValue(dadosOrigem, Restaurante.class);
-		
-		dadosOrigem.forEach((nomePropriedade, valorPropriedade) -> {
-			Field field = ReflectionUtils.findField(Restaurante.class, nomePropriedade);
-			assert field != null;
-			field.setAccessible(true);
-			
-			Object novoValor = ReflectionUtils.getField(field, restauranteOrigem);
-			
-//			System.out.println(nomePropriedade + " = " + valorPropriedade + " = " + novoValor);
-			
-			ReflectionUtils.setField(field, restauranteDestino, novoValor);
-		});
+
+		try {
+			Restaurante restauranteOrigem = objectMapper.convertValue(dadosOrigem, Restaurante.class);
+			dadosOrigem.forEach((nomePropriedade, valorPropriedade) -> {
+				Field field = ReflectionUtils.findField(Restaurante.class, nomePropriedade);
+				assert field != null;
+				field.setAccessible(true);
+
+				Object novoValor = ReflectionUtils.getField(field, restauranteOrigem);
+
+				ReflectionUtils.setField(field, restauranteDestino, novoValor);
+			});
+		} catch (IllegalArgumentException ex) {
+			Throwable rootCause = ExceptionUtils.getRootCause(ex);
+			throw new HttpMessageNotReadableException(ex.getMessage(), rootCause, null);
+		}
 	}
 	
 }

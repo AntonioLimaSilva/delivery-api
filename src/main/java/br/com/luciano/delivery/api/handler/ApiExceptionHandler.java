@@ -26,6 +26,9 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
+    private static final String MSG_ERRO_SISTEMA = "Ocorreu um erro interno no sistema, tente novamente e se o problema persistir entre em contato com o " +
+            "administrador do sistema";
+
     @ExceptionHandler(EntidadeEmUsoException.class)
     public ResponseEntity<Object> handleEntidadeEmUsoException(EntidadeEmUsoException ex, WebRequest webRequest) {
         HttpStatus status = HttpStatus.CONFLICT;
@@ -49,6 +52,19 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         Problem problem = createProblemBuilder(status, ProblemType.RECURSO_NAO_ENCONTRADO, ex.getMessage()).build();
 
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, webRequest);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleUncaught(Exception ex, WebRequest request) {
+
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        ProblemType type = ProblemType.ERRO_SISTEMA;
+        String detail = MSG_ERRO_SISTEMA;
+        ex.printStackTrace();
+        Problem problem = createProblemBuilder(status,  type,  detail).build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
     }
 
     @Override
@@ -88,10 +104,14 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        List<Problem> problems = ex.getBindingResult().getFieldErrors().stream().map(f -> Problem.builder().detail(f.getDefaultMessage()).build())
+        List<Problem.Field> fields = ex.getBindingResult().getFieldErrors().stream()
+                .map(f -> new Problem.Field(f.getField(), f.getDefaultMessage()))
                 .collect(Collectors.toList());
 
-        return super.handleExceptionInternal(ex, problems, headers, status, request);
+        ProblemType type = ProblemType.DADOS_INVALIDOS;
+        Problem problem = createProblemBuilder(status, type, MSG_ERRO_SISTEMA).fields(fields).build();
+
+        return handleExceptionInternal(ex, problem, headers, status, request);
     }
 
     @Override

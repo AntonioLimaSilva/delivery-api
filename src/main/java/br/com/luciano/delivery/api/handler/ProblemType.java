@@ -11,7 +11,9 @@ public enum ProblemType {
     ERRO_NEGOCIO("/erro-negocio", "Violação da regra de Negócio"),
     FORMATO_INVALIDO("/formato-invalido", "Tipo dado inválido"),
     PROPRIEDADE_DESCONHECIDA("/propriedade-desconhecida", "A propriedade informada não existe"),
-    PARAMETRO_INVALIDO("/parametro-invalido", "O paramêtro informado é inválido");
+    PARAMETRO_INVALIDO("/parametro-invalido", "O paramêtro informado é inválido"),
+    ERRO_SISTEMA("/erro-sistema", "Erro de sistema"),
+    DADOS_INVALIDOS("/dados-invalidos", "Dados inválidos");
 
     private final String url;
     private final String title;

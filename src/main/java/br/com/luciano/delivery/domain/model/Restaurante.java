@@ -2,6 +2,7 @@ package br.com.luciano.delivery.domain.model;
 
 import br.com.luciano.delivery.core.validation.Grupos;
 import br.com.luciano.delivery.core.validation.Multiple;
+import br.com.luciano.delivery.core.validation.ValueZeroIncludedDescription;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@ValueZeroIncludedDescription(valueField="taxaFrete", descriptionField="nome", description="Frete Grátis")
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity

@@ -7,16 +7,21 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ ElementType.METHOD, ElementType.FIELD })
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = { MultipleValidator.class })
-public @interface Multiple {
+@Constraint(validatedBy = { ValueZeroIncludedDescriptionValidator.class })
+public @interface ValueZeroIncludedDescription {
 
-    String message() default "múltiplo inválido";
+    String message() default "Taxa frete deve conter descrição frete grátis";
 
     Class<?> [] groups() default {};
 
     Class<? extends Payload> [] payload() default {};
+    
+    String valueField();
 
-    int number();
+    String descriptionField();
+
+    String description();
+
 }

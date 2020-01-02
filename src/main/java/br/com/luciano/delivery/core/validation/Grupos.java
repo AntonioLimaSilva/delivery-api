@@ -1,4 +1,4 @@
-package br.com.luciano.delivery.domain.model;
+package br.com.luciano.delivery.core.validation;
 
 public interface Grupos {
 

@@ -1,5 +1,6 @@
 package br.com.luciano.delivery.domain.model;
 
+import br.com.luciano.delivery.core.validation.Grupos;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

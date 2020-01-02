@@ -1,5 +1,7 @@
 package br.com.luciano.delivery.domain.model;
 
+import br.com.luciano.delivery.core.validation.Grupos;
+import br.com.luciano.delivery.core.validation.Multiple;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -31,6 +33,7 @@ public class Restaurante {
 	@Column(nullable = false)
 	private String nome;
 
+	@Multiple(number = 5, message = "A taxa frete tem que ser um valor multipo de 5")
 	@PositiveOrZero
 	@Column(name = "taxa_frete", nullable = false)
 	private BigDecimal taxaFrete;

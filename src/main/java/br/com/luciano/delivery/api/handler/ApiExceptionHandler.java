@@ -8,6 +8,8 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
@@ -28,6 +31,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     private static final String MSG_ERRO_SISTEMA = "Ocorreu um erro interno no sistema, tente novamente e se o problema persistir entre em contato com o " +
             "administrador do sistema";
+
+    @Autowired
+    private MessageSource messageSource;
 
     @ExceptionHandler(EntidadeEmUsoException.class)
     public ResponseEntity<Object> handleEntidadeEmUsoException(EntidadeEmUsoException ex, WebRequest webRequest) {
@@ -105,8 +111,10 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         List<Problem.Field> fields = ex.getBindingResult().getFieldErrors().stream()
-                .map(f -> new Problem.Field(f.getField(), f.getDefaultMessage()))
+                .map(f -> new Problem.Field(messageSource.getMessage(f, Locale.getDefault()), f.getDefaultMessage()))
                 .collect(Collectors.toList());
+
+
 
         ProblemType type = ProblemType.DADOS_INVALIDOS;
         Problem problem = createProblemBuilder(status, type, MSG_ERRO_SISTEMA).fields(fields).build();

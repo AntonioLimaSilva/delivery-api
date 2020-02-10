@@ -3,6 +3,7 @@ package br.com.luciano.delivery.api.handler;
 import br.com.luciano.delivery.domain.exception.EntidadeEmUsoException;
 import br.com.luciano.delivery.domain.exception.EntidadeNaoEncontradaException;
 import br.com.luciano.delivery.domain.exception.NegocioException;
+import br.com.luciano.delivery.domain.exception.ValidationRestauranteException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
@@ -14,6 +15,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,6 +25,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -56,6 +60,17 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         HttpStatus status = HttpStatus.NOT_FOUND;
 
         Problem problem = createProblemBuilder(status, ProblemType.RECURSO_NAO_ENCONTRADO, ex.getMessage()).build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, webRequest);
+    }
+
+    @ExceptionHandler(ValidationRestauranteException.class)
+    public ResponseEntity<Object> handleValidationRestauranteException(ValidationRestauranteException ex, WebRequest webRequest) {
+        List<Problem.Field> fields = getFields(ex.getBindingResult());
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        ProblemType type = ProblemType.DADOS_INVALIDOS;
+        Problem problem = createProblemBuilder(status, type, MSG_ERRO_SISTEMA).fields(fields).build();
 
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, webRequest);
     }
@@ -110,11 +125,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        List<Problem.Field> fields = ex.getBindingResult().getFieldErrors().stream()
-                .map(f -> new Problem.Field(messageSource.getMessage(f, Locale.getDefault()), f.getDefaultMessage()))
-                .collect(Collectors.toList());
-
-
+        List<Problem.Field> fields = getFields(ex.getBindingResult());
 
         ProblemType type = ProblemType.DADOS_INVALIDOS;
         Problem problem = createProblemBuilder(status, type, MSG_ERRO_SISTEMA).fields(fields).build();
@@ -188,6 +199,25 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         Problem problem = createProblemBuilder(status, type, detail).build();
 
         return handleExceptionInternal(ex, problem, headers, status, request);
+    }
+
+    private List<Problem.Field> getFields(BindingResult bindingResult) {
+        return bindingResult.getAllErrors()
+            .stream()
+            .map(objectError -> {
+                String message = messageSource.getMessage(objectError, Locale.getDefault());
+
+                String name = objectError.getObjectName();
+
+                if (objectError instanceof FieldError) {
+                    name = ((FieldError) objectError).getField();
+                }
+                return Problem.Field.builder()
+                        .message(message)
+                        .name(name)
+                        .build();
+            })
+            .collect(Collectors.toList());
     }
 
     private Problem.ProblemBuilder createProblemBuilder(HttpStatus status, ProblemType type, String detail) {

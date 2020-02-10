@@ -4,6 +4,7 @@ import br.com.luciano.delivery.core.validation.Grupos;
 import br.com.luciano.delivery.core.validation.Multiple;
 import br.com.luciano.delivery.core.validation.ValueZeroIncludedDescription;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
@@ -35,11 +36,12 @@ public class Restaurante {
 	@Column(nullable = false)
 	private String nome;
 
-	@Multiple(number = 5, message = "A taxa frete tem que ser um valor multipo de 5")
+//	@Multiple(number = 5, message = "A taxa frete tem que ser um valor multipo de 5")
 	@PositiveOrZero
 	@Column(name = "taxa_frete", nullable = false)
 	private BigDecimal taxaFrete;
 
+	@JsonIgnoreProperties(value = "nome", allowGetters = true)
 	@Valid
 	@NotNull
 	@ConvertGroup(to = Grupos.CozinhaId.class)

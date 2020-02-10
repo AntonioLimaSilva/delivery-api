@@ -18,6 +18,7 @@ public class Problem {
     private String detail;
     private List<Field> fields;
 
+    @Builder
     @Getter
     @AllArgsConstructor
     public static class Field {

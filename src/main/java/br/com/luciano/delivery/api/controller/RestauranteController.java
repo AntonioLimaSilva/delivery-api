@@ -1,8 +1,10 @@
 package br.com.luciano.delivery.api.controller;
 
+import br.com.luciano.delivery.domain.exception.ValidationRestauranteException;
 import br.com.luciano.delivery.domain.model.Restaurante;
 import br.com.luciano.delivery.domain.repository.RestauranteRepository;
 import br.com.luciano.delivery.domain.service.CadastroRestauranteService;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.SmartValidator;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -26,6 +30,9 @@ public class RestauranteController {
 	
 	@Autowired
 	private CadastroRestauranteService cadastroRestaurante;
+
+	@Autowired
+	private SmartValidator smartValidator;
 	
 	@GetMapping
 	public List<Restaurante> listar() {
@@ -43,7 +50,7 @@ public class RestauranteController {
 	}
 	
 	@PutMapping("/{restauranteId}")
-	public Restaurante atualizar(@PathVariable Long restauranteId, @RequestBody Restaurante restaurante) {
+	public Restaurante atualizar(@PathVariable Long restauranteId, @Valid @RequestBody Restaurante restaurante) {
 		return cadastroRestaurante.salvar(restauranteId, restaurante);
 	}
 	
@@ -52,12 +59,24 @@ public class RestauranteController {
 		Restaurante restauranteAtual = cadastroRestaurante.buscarPorId(restauranteId);
 		
 		merge(campos, restauranteAtual);
+		validate(restauranteAtual, "restaurante");
 		
 		return atualizar(restauranteId, restauranteAtual);
 	}
 
+	private void validate(Restaurante restaurante, String objectName) {
+		BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(restaurante, objectName);
+		this.smartValidator.validate(restaurante, bindingResult);
+
+		if (bindingResult.hasErrors()) {
+			throw new ValidationRestauranteException(bindingResult);
+		}
+	}
+
 	private void merge(Map<String, Object> dadosOrigem, Restaurante restauranteDestino) {
 		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, true)
+				.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
 
 		try {
 			Restaurante restauranteOrigem = objectMapper.convertValue(dadosOrigem, Restaurante.class);

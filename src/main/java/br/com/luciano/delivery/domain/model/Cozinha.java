@@ -1,5 +1,6 @@
 package br.com.luciano.delivery.domain.model;
 
+import br.com.luciano.delivery.api.model.CozinhaModel;
 import br.com.luciano.delivery.core.validation.Grupos;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
@@ -29,5 +30,13 @@ public class Cozinha {
 	@JsonIgnore
 	@OneToMany(mappedBy = "cozinha")
 	private List<Restaurante> restaurantes = new ArrayList<>();
-	
+
+	public Cozinha() {
+	}
+
+	public Cozinha(CozinhaModel cozinha) {
+		if (cozinha != null) {
+			this.id = cozinha.getId();
+		}
+	}
 }

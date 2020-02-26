@@ -1,5 +1,9 @@
 package br.com.luciano.delivery.api.controller;
 
+import br.com.luciano.delivery.api.assembler.RestauranteAssembler;
+import br.com.luciano.delivery.api.assembler.RestauranteDisassembler;
+import br.com.luciano.delivery.api.model.RestauranteModel;
+import br.com.luciano.delivery.api.model.input.RestauranteInput;
 import br.com.luciano.delivery.domain.exception.ValidationRestauranteException;
 import br.com.luciano.delivery.domain.model.Restaurante;
 import br.com.luciano.delivery.domain.repository.RestauranteRepository;
@@ -20,6 +24,7 @@ import javax.validation.Valid;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/restaurantes")
@@ -33,36 +38,62 @@ public class RestauranteController {
 
 	@Autowired
 	private SmartValidator smartValidator;
+
+	@Autowired
+	private RestauranteAssembler restauranteAssembler;
+
+	@Autowired
+	private RestauranteDisassembler restauranteDisassembler;
 	
 	@GetMapping
-	public List<Restaurante> listar() {
-		return restauranteRepository.findAll();
+	public List<RestauranteModel> listar() {
+		return restauranteRepository.findAll().stream().map(r -> this.restauranteAssembler.toModel(r))
+				.collect(Collectors.toList());
 	}
 	
 	@GetMapping("/{restauranteId}")
-	public Restaurante buscar(@PathVariable Long restauranteId) {
-		return cadastroRestaurante.buscarPorId(restauranteId);
+	public RestauranteModel buscar(@PathVariable Long restauranteId) {
+		return this.restauranteAssembler.toModel(cadastroRestaurante.buscarPorId(restauranteId));
 	}
 	
 	@PostMapping
-	public ResponseEntity<Restaurante> adicionar(@RequestBody @Valid Restaurante restaurante) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(cadastroRestaurante.salvar(restaurante));
+	public ResponseEntity<RestauranteModel> adicionar(@RequestBody @Valid RestauranteInput restauranteInput) {
+
+		Restaurante restaurante = this.restauranteRepository.save(this.restauranteDisassembler.toDomainObject(restauranteInput));
+
+		return ResponseEntity.status(HttpStatus.CREATED).body(restauranteAssembler.toModel(restaurante));
+	}
+
+	@PutMapping("/{restauranteId}/ativo")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void ativar(@PathVariable(name = "restauranteId") Long id) {
+		this.cadastroRestaurante.ativar(id);
+	}
+
+	@DeleteMapping("/{restauranteId}/ativo")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void inativar(@PathVariable(name = "restauranteId") Long id) {
+		this.cadastroRestaurante.inativar(id);
 	}
 	
 	@PutMapping("/{restauranteId}")
-	public Restaurante atualizar(@PathVariable Long restauranteId, @Valid @RequestBody Restaurante restaurante) {
-		return cadastroRestaurante.salvar(restauranteId, restaurante);
+	public RestauranteModel atualizar(@PathVariable Long restauranteId, @Valid @RequestBody RestauranteInput restaurante) {
+		return this.restauranteAssembler.toModel(cadastroRestaurante.salvar(restauranteId, this.restauranteDisassembler.toDomainObject(restaurante)));
 	}
 	
-	@PatchMapping("/{restauranteId}")
-	public Restaurante atualizarParcial(@PathVariable Long restauranteId, @RequestBody Map<String, Object> campos) {
-		Restaurante restauranteAtual = cadastroRestaurante.buscarPorId(restauranteId);
-		
-		merge(campos, restauranteAtual);
-		validate(restauranteAtual, "restaurante");
-		
-		return atualizar(restauranteId, restauranteAtual);
-	}
+//	@PatchMapping("/{restauranteId}")
+//	public RestauranteModel atualizarParcial(@PathVariable Long restauranteId, @RequestBody Map<String, Object> campos) {
+//		Restaurante restauranteAtual = cadastroRestaurante.buscarPorId(restauranteId);
+//
+//		this.restauranteDisassembler.toDomainObject()
+//
+//		this.restauranteAssembler.toModel(restauranteAtual);
+//
+//		merge(campos, restauranteAtual);
+//		validate(restauranteAtual, "restaurante");
+//
+//		return atualizar(restauranteId, );
+//	}
 
 	private void validate(Restaurante restaurante, String objectName) {
 		BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(restaurante, objectName);

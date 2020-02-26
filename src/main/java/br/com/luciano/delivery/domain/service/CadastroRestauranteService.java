@@ -10,6 +10,7 @@ import br.com.luciano.delivery.domain.repository.RestauranteRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CadastroRestauranteService {
@@ -19,7 +20,8 @@ public class CadastroRestauranteService {
 	
 	@Autowired
 	private CadastroCozinhaService cadastroCozinhaService;
-	
+
+	@Transactional
 	public Restaurante salvar(Restaurante restaurante) {
 		Long cozinhaId = restaurante.getCozinha().getId();
 
@@ -38,6 +40,7 @@ public class CadastroRestauranteService {
 		return this.restauranteRepository.findById(restauranteId).orElseThrow(() -> new RestauranteNaoEncontradoException(restauranteId));
     }
 
+    @Transactional
 	public Restaurante salvar(Long restauranteId, Restaurante restaurante) {
 		Restaurante restauranteAtual = this.buscarPorId(restauranteId);
 
@@ -45,5 +48,17 @@ public class CadastroRestauranteService {
 				"id", "formasPagamento", "endereco", "dataCadastro", "produtos");
 
 		return this.salvar(restauranteAtual);
+	}
+
+	@Transactional
+	public void ativar(Long id) {
+		Restaurante restaurante = this.buscarPorId(id);
+		restaurante.setAtivo(true);
+	}
+
+	@Transactional
+	public void inativar(Long id) {
+		Restaurante restaurante = this.buscarPorId(id);
+		restaurante.setAtivo(false);
 	}
 }

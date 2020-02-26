@@ -20,6 +20,7 @@
     <version.camunda>7.7.0</version.camunda>
     <version.commons-lang3>3.4</version.commons-lang3>
     <version.guava>19.0</version.guava>
+    <version.modelmapper>2.3.0</version.modelmapper>
   </properties>
 
   <dependencies>
@@ -78,6 +79,11 @@
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>${version.guava}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.modelmapper</groupId>
+      <artifactId>modelmapper</artifactId>
+      <version>${version.modelmapper}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>

@@ -1,8 +1,6 @@
 package br.com.luciano.delivery.domain.model;
 
 import br.com.luciano.delivery.core.validation.Grupos;
-import br.com.luciano.delivery.core.validation.Multiple;
-import br.com.luciano.delivery.core.validation.ValueZeroIncludedDescription;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
@@ -17,11 +15,11 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.groups.ConvertGroup;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@ValueZeroIncludedDescription(valueField="taxaFrete", descriptionField="nome", description="Frete Grátis")
+//@ValueZeroIncludedDescription(valueField="taxaFrete", descriptionField="nome", description="Frete Grátis")
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
@@ -48,20 +46,17 @@ public class Restaurante {
 	@ManyToOne
 	@JoinColumn(name = "cozinha_id", nullable = false)
 	private Cozinha cozinha;
-	
-	@JsonIgnore
+
 	@Embedded
 	private Endereco endereco;
-	
-	@JsonIgnore
+
 	@CreationTimestamp
 	@Column(nullable = false, columnDefinition = "datetime")
-	private LocalDateTime dataCadastro;
-	
-	@JsonIgnore
+	private OffsetDateTime dataCadastro;
+
 	@UpdateTimestamp
 	@Column(nullable = false, columnDefinition = "datetime")
-	private LocalDateTime dataAtualizacao;
+	private OffsetDateTime dataAtualizacao;
 	
 	@JsonIgnore
 	@ManyToMany
@@ -73,5 +68,8 @@ public class Restaurante {
 	@JsonIgnore
 	@OneToMany(mappedBy = "restaurante")
 	private List<Produto> produtos = new ArrayList<>();
+
+	@Column(name = "ativo")
+	private Boolean ativo;
 	
 }

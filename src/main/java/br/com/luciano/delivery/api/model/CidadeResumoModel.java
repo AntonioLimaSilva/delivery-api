@@ -3,10 +3,8 @@ package br.com.luciano.delivery.api.model;
 import lombok.Data;
 
 @Data
-public class CidadeModel {
+public class CidadeResumoModel {
 
-    private Long id;
     private String nome;
-    private EstadoModel estado;
-
+    private String estado;
 }

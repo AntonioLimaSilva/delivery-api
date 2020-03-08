@@ -29,9 +29,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping(value = "/restaurantes")
 public class RestauranteController {
-
-	@Autowired
-	private RestauranteRepository restauranteRepository;
 	
 	@Autowired
 	private CadastroRestauranteService cadastroRestaurante;
@@ -47,7 +44,7 @@ public class RestauranteController {
 	
 	@GetMapping
 	public List<RestauranteModel> listar() {
-		return restauranteRepository.findAll().stream().map(r -> this.restauranteAssembler.toModel(r))
+		return cadastroRestaurante.buscarTodos().stream().map(r -> this.restauranteAssembler.toModel(r))
 				.collect(Collectors.toList());
 	}
 	
@@ -59,7 +56,7 @@ public class RestauranteController {
 	@PostMapping
 	public ResponseEntity<RestauranteModel> adicionar(@RequestBody @Valid RestauranteInput restauranteInput) {
 
-		Restaurante restaurante = this.restauranteRepository.save(this.restauranteDisassembler.toDomainObject(restauranteInput));
+		Restaurante restaurante = this.cadastroRestaurante.salvar(this.restauranteDisassembler.toDomainObject(restauranteInput));
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(restauranteAssembler.toModel(restaurante));
 	}

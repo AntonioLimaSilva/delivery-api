@@ -11,6 +11,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class CadastroCidadeService {
 
@@ -43,7 +45,8 @@ public class CadastroCidadeService {
 	public void excluir(Long cidadeId) {
 		try {
 			cidadeRepository.deleteById(cidadeId);
-			
+			cidadeRepository.flush();
+
 		} catch (EmptyResultDataAccessException e) {
 			throw new CidadeNaoEncontradaException(cidadeId);
 		
@@ -58,6 +61,7 @@ public class CadastroCidadeService {
 				.orElseThrow(() -> new CidadeNaoEncontradaException(cidadeId));
     }
 
+    @Transactional
 	public Cidade salvar(Long cidadeId, Cidade cidade) {
 		// Podemos usar o orElse(null) também, que retorna a instância de cidade
 		// dentro do Optional, ou null, caso ele esteja vazio,
@@ -68,4 +72,8 @@ public class CadastroCidadeService {
 
 		return this.salvar(cidadeAtual);
 	}
+
+    public List<Cidade> buscarTodas() {
+		return this.cidadeRepository.findAll();
+    }
 }

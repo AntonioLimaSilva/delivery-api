@@ -11,6 +11,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class CadastroEstadoService {
 
@@ -50,5 +52,9 @@ public class CadastroEstadoService {
 		BeanUtils.copyProperties(estado, estadoAtual, "id");
 
 		return this.salvar(estadoAtual);
+	}
+
+	public List<Estado> buscarTodos() {
+		return this.estadoRepository.findAll();
 	}
 }

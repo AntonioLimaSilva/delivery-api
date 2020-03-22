@@ -11,6 +11,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class CadastroCozinhaService {
 
@@ -45,6 +47,10 @@ public class CadastroCozinhaService {
 
 	public Cozinha buscarPorId(Long cozinhaId) {
 		return cozinhaRepository.findById(cozinhaId).orElseThrow(() -> new CozinhaNaoEncontradaException(cozinhaId));
+	}
+
+	public List<Cozinha> buscarTodas() {
+		return this.cozinhaRepository.findAll();
 	}
 
 }

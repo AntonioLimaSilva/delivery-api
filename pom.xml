@@ -19,8 +19,8 @@
     <java.version>8</java.version>
     <version.camunda>7.7.0</version.camunda>
     <version.commons-lang3>3.4</version.commons-lang3>
-    <version.guava>19.0</version.guava>
     <version.modelmapper>2.3.0</version.modelmapper>
+    <version.springfox-swagger2>2.9.2</version.springfox-swagger2>
   </properties>
 
   <dependencies>
@@ -76,11 +76,6 @@
       <version>${version.commons-lang3}</version>
     </dependency>
     <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>${version.guava}</version>
-    </dependency>
-    <dependency>
       <groupId>org.modelmapper</groupId>
       <artifactId>modelmapper</artifactId>
       <version>${version.modelmapper}</version>
@@ -88,6 +83,11 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.springfox</groupId>
+      <artifactId>springfox-swagger2</artifactId>
+      <version>${version.springfox-swagger2}</version>
     </dependency>
   </dependencies>
 

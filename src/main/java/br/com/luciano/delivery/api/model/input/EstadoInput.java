@@ -8,5 +8,5 @@ import javax.validation.constraints.NotNull;
 public class EstadoInput {
 
     @NotNull
-    private Long id;
+    private String nome;
 }

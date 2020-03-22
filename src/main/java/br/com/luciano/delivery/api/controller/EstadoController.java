@@ -1,53 +1,59 @@
 package br.com.luciano.delivery.api.controller;
 
-import java.util.List;
-
+import br.com.luciano.delivery.api.assembler.EstadoAssembler;
+import br.com.luciano.delivery.api.assembler.EstadoDissembler;
+import br.com.luciano.delivery.api.model.EstadoModel;
+import br.com.luciano.delivery.api.model.input.EstadoInput;
 import br.com.luciano.delivery.domain.model.Estado;
-import br.com.luciano.delivery.domain.repository.EstadoRepository;
 import br.com.luciano.delivery.domain.service.CadastroEstadoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/estados")
 public class EstadoController {
-
-	@Autowired
-	private EstadoRepository estadoRepository;
 	
 	@Autowired
 	private CadastroEstadoService cadastroEstado;
+
+	@Autowired
+	private EstadoAssembler estadoAssembler;
+
+	@Autowired
+	private EstadoDissembler estadoDissembler;
 	
 	@GetMapping
-	public List<Estado> listar() {
-		return estadoRepository.findAll();
+	public List<EstadoModel> listar() {
+		return cadastroEstado.buscarTodos().stream()
+				.map(e -> this.estadoAssembler.toModel(e))
+				.collect(Collectors.toList());
 	}
 	
 	@GetMapping("/{estadoId}")
-	public Estado buscar(@PathVariable Long estadoId) {
-		return cadastroEstado.buscarPorId(estadoId);
+	public EstadoModel buscar(@PathVariable Long estadoId) {
+		return this.estadoAssembler.toModel(cadastroEstado.buscarPorId(estadoId));
 	}
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Estado adicionar(@RequestBody @Valid Estado estado) {
-		return cadastroEstado.salvar(estado);
+	public EstadoModel adicionar(@RequestBody @Valid EstadoInput estadoInput) {
+		Estado estado = this.estadoDissembler.toDomainObject(estadoInput);
+		estado = cadastroEstado.salvar(estado);
+
+		return this.estadoAssembler.toModel(estado);
 	}
 	
 	@PutMapping("/{estadoId}")
-	public Estado atualizar(@PathVariable Long estadoId, @RequestBody Estado estado) {
-		return this.cadastroEstado.salvar(estadoId, estado);
+	public EstadoModel atualizar(@PathVariable Long estadoId, @RequestBody EstadoInput estadoInput) {
+		Estado estado = this.estadoDissembler.toDomainObject(estadoInput);
+		estado = this.cadastroEstado.salvar(estadoId, estado);
+
+		return this.estadoAssembler.toModel(estado);
 	}
 	
 	@DeleteMapping("/{estadoId}")

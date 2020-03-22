@@ -6,9 +6,10 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class EstadoInput {
+public class EstadoIdInput {
 
-    @ApiModelProperty(example = "Ceará")
+    @ApiModelProperty(example = "1")
     @NotNull
-    private String nome;
+    private Long id;
+
 }

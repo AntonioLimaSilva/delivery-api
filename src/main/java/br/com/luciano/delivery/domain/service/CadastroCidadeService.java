@@ -1,6 +1,9 @@
 package br.com.luciano.delivery.domain.service;
 
-import br.com.luciano.delivery.domain.exception.*;
+import br.com.luciano.delivery.domain.exception.CidadeNaoEncontradaException;
+import br.com.luciano.delivery.domain.exception.EntidadeEmUsoException;
+import br.com.luciano.delivery.domain.exception.EstadoNaoEncontradoException;
+import br.com.luciano.delivery.domain.exception.NegocioException;
 import br.com.luciano.delivery.domain.model.Cidade;
 import br.com.luciano.delivery.domain.model.Estado;
 import br.com.luciano.delivery.domain.repository.CidadeRepository;
@@ -16,7 +19,6 @@ import java.util.List;
 @Service
 public class CadastroCidadeService {
 
-	private static final String MSG_ENTIDADE_NAO_ENCONTRADA = "Não existe um cadastro de cidade com código %d";
 	private static final String MSG_CIDADE = "Cidade de código %d não pode ser removida, pois está em uso";
 
 	@Autowired

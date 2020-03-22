@@ -10,7 +10,6 @@ import javax.persistence.*;
 @Entity
 public class Cidade {
 
-
 	@EqualsAndHashCode.Include
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,8 +18,8 @@ public class Cidade {
 	@Column(nullable = false)
 	private String nome;
 
-	@ManyToOne
-	@JoinColumn(nullable = false)
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "estado_id", nullable = false)
 	private Estado estado;
 
 }

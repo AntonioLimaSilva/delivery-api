@@ -12,7 +12,7 @@
   <groupId>br.com.luciano</groupId>
   <artifactId>delivery-api</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>algafood-api</name>
+  <name>delivery-api</name>
   <description>API de delivery de comida</description>
 
   <properties>
@@ -59,7 +59,6 @@
     	<groupId>org.flywaydb</groupId>
     	<artifactId>flyway-core</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.camunda.bpm</groupId>
       <artifactId>camunda-engine</artifactId>
@@ -87,6 +86,11 @@
     <dependency>
       <groupId>io.springfox</groupId>
       <artifactId>springfox-swagger2</artifactId>
+      <version>${version.springfox-swagger2}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.springfox</groupId>
+      <artifactId>springfox-swagger-ui</artifactId>
       <version>${version.springfox-swagger2}</version>
     </dependency>
   </dependencies>

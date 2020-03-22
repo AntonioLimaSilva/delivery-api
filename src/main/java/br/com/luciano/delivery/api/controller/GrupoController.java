@@ -6,6 +6,7 @@ import br.com.luciano.delivery.api.model.GrupoModel;
 import br.com.luciano.delivery.api.model.input.GrupoInput;
 import br.com.luciano.delivery.domain.model.Grupo;
 import br.com.luciano.delivery.domain.service.CadastroGrupoService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Api(tags = "Grupos")
 @RestController
 @RequestMapping("/grupos")
 public class GrupoController {

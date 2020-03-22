@@ -6,6 +6,7 @@ import br.com.luciano.delivery.api.model.CidadeModel;
 import br.com.luciano.delivery.api.model.input.CidadeInput;
 import br.com.luciano.delivery.domain.model.Cidade;
 import br.com.luciano.delivery.domain.service.CadastroCidadeService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Api(tags = "Cidades")
 @RestController
 @RequestMapping(value = "/cidades")
 public class CidadeController {

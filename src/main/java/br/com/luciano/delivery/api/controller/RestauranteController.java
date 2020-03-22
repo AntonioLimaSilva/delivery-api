@@ -10,6 +10,7 @@ import br.com.luciano.delivery.domain.repository.RestauranteRepository;
 import br.com.luciano.delivery.domain.service.CadastroRestauranteService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.annotations.Api;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Api(tags = "Restaurantes")
 @RestController
 @RequestMapping(value = "/restaurantes")
 public class RestauranteController {

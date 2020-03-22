@@ -6,6 +6,7 @@ import br.com.luciano.delivery.api.model.CozinhaModel;
 import br.com.luciano.delivery.api.model.input.CozinhaInput;
 import br.com.luciano.delivery.domain.model.Cozinha;
 import br.com.luciano.delivery.domain.service.CadastroCozinhaService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Api(tags = "Cozinhas")
 @RestController
 @RequestMapping(value = "/cozinhas")
 public class CozinhaController {

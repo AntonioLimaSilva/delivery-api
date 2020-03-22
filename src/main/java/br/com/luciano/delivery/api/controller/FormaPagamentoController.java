@@ -6,6 +6,7 @@ import br.com.luciano.delivery.api.model.FormaPagamentoModel;
 import br.com.luciano.delivery.api.model.input.FormaPagamentoInput;
 import br.com.luciano.delivery.domain.model.FormaPagamento;
 import br.com.luciano.delivery.domain.service.CadastroFormaPagamentoService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Api(tags = "Formas de pagamento")
 @RestController
 @RequestMapping("/pagamentos")
 public class FormaPagamentoController {

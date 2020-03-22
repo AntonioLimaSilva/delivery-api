@@ -6,6 +6,7 @@ import br.com.luciano.delivery.api.model.EstadoModel;
 import br.com.luciano.delivery.api.model.input.EstadoInput;
 import br.com.luciano.delivery.domain.model.Estado;
 import br.com.luciano.delivery.domain.service.CadastroEstadoService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Api(tags = "Estados")
 @RestController
 @RequestMapping("/estados")
 public class EstadoController {

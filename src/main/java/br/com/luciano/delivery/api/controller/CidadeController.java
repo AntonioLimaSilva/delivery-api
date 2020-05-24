@@ -9,6 +9,8 @@ import br.com.luciano.delivery.domain.service.CadastroCidadeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,8 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping(value = "/cidades")
 public class CidadeController {
+
+	private static final Logger log = LoggerFactory.getLogger(CidadeController.class);
 	
 	@Autowired
 	private CadastroCidadeService cadastroCidade;
@@ -35,6 +39,8 @@ public class CidadeController {
 	@ApiOperation("Lista as cidades")
 	@GetMapping
 	public List<CidadeModel> listar() {
+		log.debug("Início do processamento controller cidades");
+
 		return cadastroCidade.buscarTodas().stream()
 				.map(c -> this.cidadeAssembler.toModel(c))
 				.collect(Collectors.toList());

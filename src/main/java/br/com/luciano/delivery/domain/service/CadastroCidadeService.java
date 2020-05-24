@@ -7,6 +7,8 @@ import br.com.luciano.delivery.domain.exception.NegocioException;
 import br.com.luciano.delivery.domain.model.Cidade;
 import br.com.luciano.delivery.domain.model.Estado;
 import br.com.luciano.delivery.domain.repository.CidadeRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -18,6 +20,8 @@ import java.util.List;
 
 @Service
 public class CadastroCidadeService {
+
+	private static final Logger log = LoggerFactory.getLogger(CadastroCidadeService.class);
 
 	private static final String MSG_CIDADE = "Cidade de código %d não pode ser removida, pois está em uso";
 
@@ -76,6 +80,7 @@ public class CadastroCidadeService {
 	}
 
     public List<Cidade> buscarTodas() {
+		log.debug("Obtendo listagem de cidades");
 		return this.cidadeRepository.findAll();
     }
 }

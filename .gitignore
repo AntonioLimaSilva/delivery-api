@@ -18,15 +18,17 @@ target/
 *.iws
 *.iml
 *.ipr
+*.log
 
 ### NetBeans ###
-/mysql
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
 build/
+/data
+/mysql/lib/
 
 ### VS Code ###
 .vscode/

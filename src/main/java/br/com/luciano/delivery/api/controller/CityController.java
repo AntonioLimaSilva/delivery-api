@@ -2,9 +2,9 @@ package br.com.luciano.delivery.api.controller;
 
 import br.com.luciano.delivery.api.assembler.CityAssembler;
 import br.com.luciano.delivery.api.assembler.CityDisassembler;
-import br.com.luciano.delivery.api.model.CidadeModel;
-import br.com.luciano.delivery.api.model.input.CidadeInput;
-import br.com.luciano.delivery.domain.model.Cidade;
+import br.com.luciano.delivery.api.model.CityModel;
+import br.com.luciano.delivery.api.model.input.CityInput;
+import br.com.luciano.delivery.domain.entity.CityEntity;
 import br.com.luciano.delivery.domain.service.CityService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -20,9 +20,9 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Api(tags = "Cidades")
+@Api(tags = "Cities")
 @RestController
-@RequestMapping(value = "/cidades")
+@RequestMapping(value = "/cities")
 public class CityController {
 
 	private static final Logger log = LoggerFactory.getLogger(CityController.class);
@@ -38,46 +38,46 @@ public class CityController {
 
 	@ApiOperation("Lista as cidades")
 	@GetMapping
-	public List<CidadeModel> searchAll() {
+	public List<CityModel> searchAll() {
 		log.debug("Início do processamento controller cidades");
 
-		return cityService.buscarTodas().stream()
+		return cityService.findAll().stream()
 				.map(c -> this.cityAssembler.toModel(c))
 				.collect(Collectors.toList());
 	}
 
-	@ApiOperation("Buscar cidade por id")
-	@GetMapping("/{cidadeId}")
-	public CidadeModel searchBy(@ApiParam(value = "ID de uma cidade", example = "1")
-							  @PathVariable Long cidadeId) {
-		return this.cityAssembler.toModel(cityService.buscarPorId(cidadeId));
+	@ApiOperation("find by id")
+	@GetMapping("/{id}")
+	public CityModel searchBy(@ApiParam(value = "city id", example = "1")
+							  @PathVariable Long id) {
+		return this.cityAssembler.toModel(cityService.findByIdOrFail(id));
 	}
 
-	@ApiOperation("Adiciona uma cidade")
+	@ApiOperation("Create new city")
 	@PostMapping
-	public ResponseEntity<CidadeModel> create(@ApiParam(name = "Corpo", value = "Representação de uma cidade")
-												 @RequestBody @Valid CidadeInput cidadeInput) {
-		Cidade cidade = this.cityDisassembler.toDomainObject(cidadeInput);
-		CidadeModel cidadeModel = this.cityAssembler.toModel(cityService.salvar(cidade));
+	public ResponseEntity<CityModel> create(@ApiParam(name = "Corpo", value = "Representação de uma cidade")
+												 @RequestBody @Valid CityInput cityInput) {
+		CityEntity cityEntity = this.cityDisassembler.toDomainObject(cityInput);
+		CityModel cityModel = this.cityAssembler.toModel(cityService.save(cityEntity));
 
-		return ResponseEntity.status(HttpStatus.CREATED).body(cidadeModel);
+		return ResponseEntity.status(HttpStatus.CREATED).body(cityModel);
 	}
 
-	@ApiOperation("Altera uma cidade")
-	@PutMapping("/{cidadeId}")
-	public CidadeModel update(@ApiParam(value = "ID de uma cidade", example = "1")
-								 @PathVariable Long cidadeId,
-							  @ApiParam(name = "Corpo", value = "Representação de uma cidade")
-								 @RequestBody CidadeInput cidadeInput) {
-		Cidade cidade = this.cityDisassembler.toDomainObject(cidadeInput);
-		return this.cityAssembler.toModel(this.cityService.salvar(cidadeId, cidade));
+	@ApiOperation("Update city existing")
+	@PutMapping("/{id}")
+	public CityModel update(@ApiParam(value = "ID de uma cidade", example = "1")
+								 @PathVariable Long id,
+							@ApiParam(name = "Body city", value = "Representation of city")
+								 @RequestBody CityInput cityInput) {
+		CityEntity cityEntity = this.cityDisassembler.toDomainObject(cityInput);
+		return this.cityAssembler.toModel(this.cityService.save(id, cityEntity));
 	}
 
-	@ApiOperation("Remove uma cidade por id")
-	@DeleteMapping("/{cidadeId}")
+	@ApiOperation("Remove city by id")
+	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void remove(@ApiParam(value = "ID de uma cidade", example = "1") @PathVariable Long cidadeId) {
-		cityService.excluir(cidadeId);
+	public void remove(@ApiParam(value = "city id", example = "1") @PathVariable Long id) {
+		cityService.delete(id);
 	}
 	
 }

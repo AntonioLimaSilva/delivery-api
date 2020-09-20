@@ -1,10 +1,10 @@
 package br.com.luciano.delivery.domain.service;
 
+import br.com.luciano.delivery.domain.entity.CityEntity;
+import br.com.luciano.delivery.domain.entity.KitchenEntity;
+import br.com.luciano.delivery.domain.entity.RestaurantEntity;
 import br.com.luciano.delivery.domain.exception.*;
-import br.com.luciano.delivery.domain.model.Cidade;
-import br.com.luciano.delivery.domain.model.Cozinha;
-import br.com.luciano.delivery.domain.model.Restaurante;
-import br.com.luciano.delivery.domain.repository.RestauranteRepository;
+import br.com.luciano.delivery.domain.repository.RestaurantRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ import java.util.List;
 public class RestaurantService {
 
 	@Autowired
-	private RestauranteRepository restauranteRepository;
+	private RestaurantRepository restaurantRepository;
 	
 	@Autowired
 	private KitchenService kitchenService;
@@ -25,43 +25,42 @@ public class RestaurantService {
 	private CityService cityService;
 
 	@Transactional
-	public Restaurante salvar(Restaurante restaurante) {
-		Cozinha cozinha = kitchenService.buscarPorId(restaurante.getCozinha().getId());
-		Cidade cidade = cityService.buscarPorId(restaurante.getEndereco().getCidade().getId());
+	public RestaurantEntity save(RestaurantEntity restaurant) {
+		KitchenEntity kitchen = kitchenService.findByIdOrFail(restaurant.getKitchen().getId());
+		CityEntity cityEntity = cityService.findByIdOrFail(restaurant.getAddress().getCity().getId());
 
-		restaurante.setCozinha(cozinha);
-		restaurante.getEndereco().setCidade(cidade);
+		restaurant.setKitchen(kitchen);
+		restaurant.getAddress().setCity(cityEntity);
 		
-		return restauranteRepository.save(restaurante);
+		return restaurantRepository.save(restaurant);
 	}
 
-    public Restaurante buscarPorId(Long restauranteId) {
-		return this.restauranteRepository.findById(restauranteId).orElseThrow(() -> new RestauranteNaoEncontradoException(restauranteId));
+    public RestaurantEntity findByIdOrFail(Long id) {
+		return this.restaurantRepository.findById(id).orElseThrow(() -> new RestauranteNaoEncontradoException(id));
     }
 
     @Transactional
-	public Restaurante salvar(Long restauranteId, Restaurante restaurante) {
-		Restaurante restauranteAtual = this.buscarPorId(restauranteId);
+	public RestaurantEntity save(Long id, RestaurantEntity restaurant) {
+		RestaurantEntity restaurantActual = this.findByIdOrFail(id);
 
-		BeanUtils.copyProperties(restaurante, restauranteAtual,
-				"id", "formasPagamento", "dataCadastro", "produtos");
+		BeanUtils.copyProperties(restaurant, restaurantActual, "id", "payments", "createAt", "products");
 
-		return this.salvar(restauranteAtual);
+		return this.save(restaurantActual);
 	}
 
 	@Transactional
-	public void ativar(Long id) {
-		Restaurante restaurante = this.buscarPorId(id);
-		restaurante.setAtivo(true);
+	public void activate(Long id) {
+		RestaurantEntity restaurant = this.findByIdOrFail(id);
+		restaurant.setActive(true);
 	}
 
 	@Transactional
-	public void inativar(Long id) {
-		Restaurante restaurante = this.buscarPorId(id);
-		restaurante.setAtivo(false);
+	public void inactivate(Long id) {
+		RestaurantEntity restaurant = this.findByIdOrFail(id);
+		restaurant.setActive(false);
 	}
 
-	public List<Restaurante> buscarTodos() {
-		return this.restauranteRepository.findAll();
+	public List<RestaurantEntity> findAll() {
+		return this.restaurantRepository.findAll();
 	}
 }

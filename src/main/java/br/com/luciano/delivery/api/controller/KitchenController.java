@@ -2,9 +2,9 @@ package br.com.luciano.delivery.api.controller;
 
 import br.com.luciano.delivery.api.assembler.KitchenAssembler;
 import br.com.luciano.delivery.api.assembler.KitchenDisassembler;
-import br.com.luciano.delivery.api.model.CozinhaModel;
-import br.com.luciano.delivery.api.model.input.CozinhaInput;
-import br.com.luciano.delivery.domain.model.Cozinha;
+import br.com.luciano.delivery.api.model.KitchenModel;
+import br.com.luciano.delivery.api.model.input.KitchenIdInput;
+import br.com.luciano.delivery.domain.entity.KitchenEntity;
 import br.com.luciano.delivery.domain.service.KitchenService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +15,9 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Api(tags = "Cozinhas")
+@Api(tags = "Kitchens")
 @RestController
-@RequestMapping(value = "/cozinhas")
+@RequestMapping(value = "/kitchens")
 public class KitchenController {
 	
 	@Autowired
@@ -30,39 +30,39 @@ public class KitchenController {
 	private KitchenDisassembler kitchenDisassembler;
 	
 	@GetMapping
-	public List<CozinhaModel> searchAll() {
-		return cadastroCozinha.buscarTodas().stream()
+	public List<KitchenModel> searchAll() {
+		return cadastroCozinha.findAll().stream()
 				.map(c -> this.kitchenAssembler.toModel(c))
 				.collect(Collectors.toList());
 	}
 	
-	@GetMapping("/{cozinhaId}")
-	public CozinhaModel searchBy(@PathVariable Long cozinhaId) {
-		return this.kitchenAssembler.toModel(cadastroCozinha.buscarPorId(cozinhaId));
+	@GetMapping("/{id}")
+	public KitchenModel searchBy(@PathVariable Long id) {
+		return this.kitchenAssembler.toModel(cadastroCozinha.findByIdOrFail(id));
 	}
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public CozinhaModel create(@RequestBody @Valid CozinhaInput cozinhaInput) {
+	public KitchenModel create(@RequestBody @Valid KitchenIdInput kitchenIdInput) {
 
-		Cozinha cozinha = this.kitchenDisassembler.toDomainObject(cozinhaInput);
-		cozinha = cadastroCozinha.salvar(cozinha);
+		KitchenEntity kitchen = this.kitchenDisassembler.toDomainObject(kitchenIdInput);
+		kitchen = cadastroCozinha.save(kitchen);
 
-		return this.kitchenAssembler.toModel(cozinha);
+		return this.kitchenAssembler.toModel(kitchen);
 	}
 	
-	@PutMapping("/{cozinhaId}")
-	public CozinhaModel update(@PathVariable Long cozinhaId, @RequestBody CozinhaInput cozinhaInput) {
+	@PutMapping("/{id}")
+	public KitchenModel update(@PathVariable Long id, @RequestBody KitchenIdInput kitchenIdInput) {
 
-		Cozinha cozinha = this.kitchenDisassembler.toDomainObject(cozinhaInput);
-		cozinha = cadastroCozinha.salvar(cozinhaId, cozinha);
+		KitchenEntity kitchen = this.kitchenDisassembler.toDomainObject(kitchenIdInput);
+		kitchen = cadastroCozinha.save(id, kitchen);
 
-		return this.kitchenAssembler.toModel(cozinha);
+		return this.kitchenAssembler.toModel(kitchen);
 	}
 	
-	@DeleteMapping("/{cozinhaId}")
+	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void remove(@PathVariable Long cozinhaId) {
-		cadastroCozinha.excluir(cozinhaId);
+	public void remove(@PathVariable Long id) {
+		cadastroCozinha.delete(id);
 	}
 }

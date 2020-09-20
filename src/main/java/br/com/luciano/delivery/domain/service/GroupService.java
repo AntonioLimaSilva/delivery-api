@@ -1,8 +1,8 @@
 package br.com.luciano.delivery.domain.service;
 
 import br.com.luciano.delivery.domain.exception.GrupoNaoEncontradoException;
-import br.com.luciano.delivery.domain.model.Grupo;
-import br.com.luciano.delivery.domain.repository.GrupoRepository;
+import br.com.luciano.delivery.domain.entity.Group;
+import br.com.luciano.delivery.domain.repository.GroupRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,34 +14,34 @@ import java.util.List;
 public class GroupService {
 
     @Autowired
-    private GrupoRepository grupoRepository;
+    private GroupRepository groupRepository;
 
     @Transactional
-    public Grupo salvar(Grupo grupo) {
-        return this.grupoRepository.save(grupo);
+    public Group save(Group group) {
+        return this.groupRepository.save(group);
     }
 
-    public Grupo buscarPor(Long id) {
-        return grupoRepository.findById(id).orElseThrow(() -> new GrupoNaoEncontradoException(id));
-    }
-
-    @Transactional
-    public Grupo atualizar(Grupo grupo, Long id) {
-        Grupo grupoSalvo = this.buscarPor(id);
-
-        BeanUtils.copyProperties(grupo, grupoSalvo, "id");
-
-        return salvar(grupoSalvo);
-    }
-
-    public List<Grupo> buscarTodos() {
-        return this.grupoRepository.findAll();
+    public Group findByIdOrFail(Long id) {
+        return groupRepository.findById(id).orElseThrow(() -> new GrupoNaoEncontradoException(id));
     }
 
     @Transactional
-    public void excluir(Long idGrupo) {
-        Grupo grupo = buscarPor(idGrupo);
+    public Group update(Group group, Long id) {
+        Group groupSalvo = this.findByIdOrFail(id);
 
-        this.grupoRepository.delete(grupo);
+        BeanUtils.copyProperties(group, groupSalvo, "id");
+
+        return save(groupSalvo);
+    }
+
+    public List<Group> findAll() {
+        return this.groupRepository.findAll();
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        Group group = findByIdOrFail(id);
+
+        this.groupRepository.delete(group);
     }
 }

@@ -1,12 +1,12 @@
 package br.com.luciano.delivery.domain.service;
 
+import br.com.luciano.delivery.domain.entity.CityEntity;
+import br.com.luciano.delivery.domain.entity.StateEntity;
 import br.com.luciano.delivery.domain.exception.CidadeNaoEncontradaException;
 import br.com.luciano.delivery.domain.exception.EntidadeEmUsoException;
 import br.com.luciano.delivery.domain.exception.EstadoNaoEncontradoException;
 import br.com.luciano.delivery.domain.exception.NegocioException;
-import br.com.luciano.delivery.domain.model.Cidade;
-import br.com.luciano.delivery.domain.model.Estado;
-import br.com.luciano.delivery.domain.repository.CidadeRepository;
+import br.com.luciano.delivery.domain.repository.CityRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -26,61 +26,61 @@ public class CityService {
 	private static final String MSG_CIDADE = "Cidade de código %d não pode ser removida, pois está em uso";
 
 	@Autowired
-	private CidadeRepository cidadeRepository;
+	private CityRepository cityRepository;
 	
 	@Autowired
-	private CountryService countryService;
+	private StateService stateService;
 
 	@Transactional
-	public Cidade salvar(Cidade cidade) {
-		Long estadoId = cidade.getEstado().getId();
+	public CityEntity save(CityEntity cityEntity) {
+		Long stateId = cityEntity.getState().getId();
 
-		Estado estado;
+		StateEntity stateEntity;
 		try {
-			estado = countryService.buscarPorId(estadoId);
+			stateEntity = stateService.findByIdOrFail(stateId);
 		} catch (EstadoNaoEncontradoException ex) {
 			throw new NegocioException(ex.getMessage(), ex);
 		}
 		
-		cidade.setEstado(estado);
+		cityEntity.setState(stateEntity);
 		
-		return cidadeRepository.save(cidade);
+		return cityRepository.save(cityEntity);
 	}
 
 	@Transactional
-	public void excluir(Long cidadeId) {
+	public void delete(Long id) {
 		try {
-			cidadeRepository.deleteById(cidadeId);
-			cidadeRepository.flush();
+			cityRepository.deleteById(id);
+			cityRepository.flush();
 
 		} catch (EmptyResultDataAccessException e) {
-			throw new CidadeNaoEncontradaException(cidadeId);
+			throw new CidadeNaoEncontradaException(id);
 		
 		} catch (DataIntegrityViolationException e) {
 			throw new EntidadeEmUsoException(
-				String.format(MSG_CIDADE, cidadeId));
+				String.format(MSG_CIDADE, id));
 		}
 	}
 
-    public Cidade buscarPorId(Long cidadeId) {
-		return this.cidadeRepository.findById(cidadeId)
-				.orElseThrow(() -> new CidadeNaoEncontradaException(cidadeId));
+    public CityEntity findByIdOrFail(Long id) {
+		return this.cityRepository.findById(id)
+				.orElseThrow(() -> new CidadeNaoEncontradaException(id));
     }
 
     @Transactional
-	public Cidade salvar(Long cidadeId, Cidade cidade) {
+	public CityEntity save(Long cidadeId, CityEntity cityEntity) {
 		// Podemos usar o orElse(null) também, que retorna a instância de cidade
 		// dentro do Optional, ou null, caso ele esteja vazio,
 		// mas nesse caso, temos a responsabilidade de tomar cuidado com NullPointerException
-		Cidade cidadeAtual = this.buscarPorId(cidadeId);
+		CityEntity cityEntityActual = this.findByIdOrFail(cidadeId);
 
-		BeanUtils.copyProperties(cidade, cidadeAtual, "id");
+		BeanUtils.copyProperties(cityEntity, cityEntityActual, "id");
 
-		return this.salvar(cidadeAtual);
+		return this.save(cityEntityActual);
 	}
 
-    public List<Cidade> buscarTodas() {
+    public List<CityEntity> findAll() {
 		log.debug("Obtendo listagem de cidades");
-		return this.cidadeRepository.findAll();
+		return this.cityRepository.findAll();
     }
 }

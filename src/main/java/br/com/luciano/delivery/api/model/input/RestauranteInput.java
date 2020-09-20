@@ -1,6 +1,5 @@
 package br.com.luciano.delivery.api.model.input;
 
-import br.com.luciano.delivery.domain.model.Cozinha;
 import lombok.Data;
 
 import javax.validation.Valid;
@@ -21,7 +20,7 @@ public class RestauranteInput {
     private Boolean ativo;
     @Valid
     @NotNull
-    private CozinhaInput cozinha;
+    private KitchenIdInput cozinha;
     @Valid
     @NotNull
     private EnderecoInput endereco;

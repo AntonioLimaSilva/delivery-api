@@ -2,9 +2,9 @@ package br.com.luciano.delivery.api.controller;
 
 import br.com.luciano.delivery.api.assembler.GroupAssembler;
 import br.com.luciano.delivery.api.assembler.GroupDisassembler;
-import br.com.luciano.delivery.api.model.GrupoModel;
-import br.com.luciano.delivery.api.model.input.GrupoInput;
-import br.com.luciano.delivery.domain.model.Grupo;
+import br.com.luciano.delivery.api.model.GroupModel;
+import br.com.luciano.delivery.api.model.input.GroupNameInput;
+import br.com.luciano.delivery.domain.entity.Group;
 import br.com.luciano.delivery.domain.service.GroupService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +16,9 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Api(tags = "Grupos")
+@Api(tags = "Groups")
 @RestController
-@RequestMapping("/grupos")
+@RequestMapping("/groups")
 public class GroupController {
 
     @Autowired
@@ -31,36 +31,36 @@ public class GroupController {
     private GroupService groupService;
 
     @PostMapping
-    public ResponseEntity<GrupoModel> create(@RequestBody @Valid GrupoInput grupoInput) {
+    public ResponseEntity<GroupModel> create(@RequestBody @Valid GroupNameInput groupNameInput) {
 
-        Grupo grupo = this.groupDisassembler.toDomainObject(grupoInput);
-        grupo = groupService.salvar(grupo);
-        GrupoModel grupoModel = this.groupAssembler.toModel(grupo);
+        Group group = this.groupDisassembler.toDomainObject(groupNameInput);
+        group = groupService.save(group);
+        GroupModel groupModel = this.groupAssembler.toModel(group);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(grupoModel);
+        return ResponseEntity.status(HttpStatus.CREATED).body(groupModel);
     }
 
     @GetMapping
-    public List<GrupoModel> searchAll() {
-        return groupService.buscarTodos()
+    public List<GroupModel> searchAll() {
+        return groupService.findAll()
                 .stream().map(g -> this.groupAssembler.toModel(g))
                 .collect(Collectors.toList());
     }
 
-    @PutMapping("/{idGrupo}")
-    public ResponseEntity<GrupoModel> update(@RequestBody @Valid GrupoInput grupoInput, @PathVariable Long idGrupo) {
-        Grupo grupo = this.groupDisassembler.toDomainObject(grupoInput);
-        grupo = groupService.atualizar(grupo, idGrupo);
+    @PutMapping("/{id}")
+    public ResponseEntity<GroupModel> update(@RequestBody @Valid GroupNameInput groupNameInput, @PathVariable Long id) {
+        Group group = this.groupDisassembler.toDomainObject(groupNameInput);
+        group = groupService.update(group, id);
 
-        GrupoModel grupoModel = this.groupAssembler.toModel(grupo);
+        GroupModel groupModel = this.groupAssembler.toModel(group);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(grupoModel);
+        return ResponseEntity.status(HttpStatus.CREATED).body(groupModel);
     }
 
-    @DeleteMapping("/{idGrupo}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void remove(@PathVariable Long idGrupo) {
-        groupService.excluir(idGrupo);
+    public void remove(@PathVariable Long id) {
+        groupService.delete(id);
     }
 
 }

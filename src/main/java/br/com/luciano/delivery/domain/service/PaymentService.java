@@ -1,8 +1,8 @@
 package br.com.luciano.delivery.domain.service;
 
 import br.com.luciano.delivery.domain.exception.FormaPagamentoNaoEncontradaException;
-import br.com.luciano.delivery.domain.model.FormaPagamento;
-import br.com.luciano.delivery.domain.repository.FormaPagamentoRepository;
+import br.com.luciano.delivery.domain.entity.PaymentEntity;
+import br.com.luciano.delivery.domain.repository.PaymentRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,36 +14,36 @@ import java.util.List;
 public class PaymentService {
 
     @Autowired
-    private FormaPagamentoRepository formaPagamentoRepository;
+    private PaymentRepository paymentRepository;
 
     @Transactional
-    public FormaPagamento salvar(FormaPagamento formaPagamento) {
-        return this.formaPagamentoRepository.save(formaPagamento);
+    public PaymentEntity save(PaymentEntity paymentEntity) {
+        return this.paymentRepository.save(paymentEntity);
     }
 
-    public List<FormaPagamento> buscarTodas() {
-        return this.formaPagamentoRepository.findAll();
-    }
-
-    @Transactional
-    public FormaPagamento buscarPorId(Long idPagamento) {
-        return formaPagamentoRepository.findById(idPagamento).orElseThrow(() -> new FormaPagamentoNaoEncontradaException(idPagamento));
+    public List<PaymentEntity> findAll() {
+        return this.paymentRepository.findAll();
     }
 
     @Transactional
-    public FormaPagamento atualizar(Long idPagamento, FormaPagamento formaPagamento) {
-        FormaPagamento formaPagamentoSalva = this.buscarPorId(idPagamento);
-
-        BeanUtils.copyProperties(formaPagamento, formaPagamentoSalva, "id");
-
-        return this.salvar(formaPagamentoSalva);
+    public PaymentEntity findByIdOrFail(Long id) {
+        return paymentRepository.findById(id).orElseThrow(() -> new FormaPagamentoNaoEncontradaException(id));
     }
 
     @Transactional
-    public void excluir(Long idPagamento) {
-        FormaPagamento formaPagamento = this.buscarPorId(idPagamento);
+    public PaymentEntity update(Long id, PaymentEntity paymentEntity) {
+        PaymentEntity paymentEntitySave = this.findByIdOrFail(id);
 
-        this.formaPagamentoRepository.delete(formaPagamento);
+        BeanUtils.copyProperties(paymentEntity, paymentEntitySave, "id");
+
+        return this.save(paymentEntitySave);
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        PaymentEntity paymentEntity = this.findByIdOrFail(id);
+
+        this.paymentRepository.delete(paymentEntity);
     }
 
 }

@@ -1,7 +1,7 @@
 package br.com.luciano.delivery.core.config;
 
 import br.com.luciano.delivery.api.model.EnderecoModel;
-import br.com.luciano.delivery.domain.model.Endereco;
+import br.com.luciano.delivery.domain.entity.Address;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.springframework.context.annotation.Bean;
@@ -14,12 +14,11 @@ public class ModelMapperConfig {
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
 
-        TypeMap<Endereco, EnderecoModel> typeMap = modelMapper.createTypeMap(Endereco.class, EnderecoModel.class);
+        TypeMap<Address, EnderecoModel> typeMap = modelMapper.createTypeMap(Address.class, EnderecoModel.class);
 
-        typeMap.<String>addMapping(src -> src.getCidade().getEstado().getNome(),
-                (dest, value) -> dest.getCidade().setEstado(value));
+        typeMap.<String>addMapping(src -> src.getCity().getState().getName(),
+                (dest, value) -> dest.getCidade().setCountry(value));
 
         return modelMapper;
     }
-
 }

@@ -2,9 +2,9 @@ package br.com.luciano.delivery.api.controller;
 
 import br.com.luciano.delivery.api.assembler.PaymentAssembler;
 import br.com.luciano.delivery.api.assembler.PaymentDisassembler;
-import br.com.luciano.delivery.api.model.FormaPagamentoModel;
-import br.com.luciano.delivery.api.model.input.FormaPagamentoInput;
-import br.com.luciano.delivery.domain.model.FormaPagamento;
+import br.com.luciano.delivery.api.model.PaymentModel;
+import br.com.luciano.delivery.api.model.input.PaymentDescriptionInput;
+import br.com.luciano.delivery.domain.entity.PaymentEntity;
 import br.com.luciano.delivery.domain.service.PaymentService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +16,9 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Api(tags = "Formas de pagamento")
+@Api(tags = "Payments")
 @RestController
-@RequestMapping("/pagamentos")
+@RequestMapping("/payments")
 public class PaymentController {
 
     @Autowired
@@ -31,37 +31,37 @@ public class PaymentController {
     private PaymentService paymentService;
 
     @PostMapping
-    public ResponseEntity<FormaPagamentoModel> create(@RequestBody @Valid FormaPagamentoInput formaPagamentoInput) {
-        FormaPagamento formaPagamento = paymentDisassembler.toDomainObject(formaPagamentoInput);
+    public ResponseEntity<PaymentModel> create(@RequestBody @Valid PaymentDescriptionInput paymentDescriptionInput) {
+        PaymentEntity paymentEntity = paymentDisassembler.toDomainObject(paymentDescriptionInput);
 
-        formaPagamento = this.paymentService.salvar(formaPagamento);
+        paymentEntity = this.paymentService.save(paymentEntity);
 
-        FormaPagamentoModel formaPagamentoModel = this.paymentAssembler.toModel(formaPagamento);
+        PaymentModel paymentModel = this.paymentAssembler.toModel(paymentEntity);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(formaPagamentoModel);
+        return ResponseEntity.status(HttpStatus.CREATED).body(paymentModel);
     }
 
     @GetMapping
-    public List<FormaPagamentoModel> searchAll() {
-        return this.paymentService.buscarTodas().stream()
+    public List<PaymentModel> searchAll() {
+        return this.paymentService.findAll().stream()
                 .map(f -> this.paymentAssembler.toModel(f))
                 .collect(Collectors.toList());
     }
 
-    @PutMapping("/{idPagamento}")
-    public ResponseEntity<FormaPagamentoModel> update(@PathVariable Long idPagamento, @RequestBody @Valid FormaPagamentoInput formaPagamentoInput) {
-        FormaPagamento formaPagamento = this.paymentDisassembler.toDomainObject(formaPagamentoInput);
+    @PutMapping("/{id}")
+    public ResponseEntity<PaymentModel> update(@PathVariable Long id, @RequestBody @Valid PaymentDescriptionInput paymentDescriptionInput) {
+        PaymentEntity paymentEntity = this.paymentDisassembler.toDomainObject(paymentDescriptionInput);
 
-        formaPagamento = this.paymentService.atualizar(idPagamento, formaPagamento);
-        FormaPagamentoModel formaPagamentoModel = this.paymentAssembler.toModel(formaPagamento);
+        paymentEntity = this.paymentService.update(id, paymentEntity);
+        PaymentModel paymentModel = this.paymentAssembler.toModel(paymentEntity);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(formaPagamentoModel);
+        return ResponseEntity.status(HttpStatus.CREATED).body(paymentModel);
     }
 
-    @DeleteMapping("/{idPagamento}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void remove(@PathVariable Long idPagamento) {
-        this.paymentService.excluir(idPagamento);
+    public void remove(@PathVariable Long id) {
+        this.paymentService.delete(id);
     }
 
 }

@@ -1,9 +1,9 @@
 package br.com.luciano.delivery.domain.service;
 
+import br.com.luciano.delivery.domain.entity.KitchenEntity;
 import br.com.luciano.delivery.domain.exception.CozinhaNaoEncontradaException;
 import br.com.luciano.delivery.domain.exception.EntidadeEmUsoException;
-import br.com.luciano.delivery.domain.model.Cozinha;
-import br.com.luciano.delivery.domain.repository.CozinhaRepository;
+import br.com.luciano.delivery.domain.repository.KitchenRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -19,38 +19,38 @@ public class KitchenService {
 	private static final String MSG_COZINHA_NAO_REMOVIDO = "Cozinha de código %d não pode ser removida, pois está em uso";
 
 	@Autowired
-	private CozinhaRepository cozinhaRepository;
+	private KitchenRepository kitchenRepository;
 	
-	public Cozinha salvar(Cozinha cozinha) {
-		return cozinhaRepository.save(cozinha);
+	public KitchenEntity save(KitchenEntity kitchen) {
+		return kitchenRepository.save(kitchen);
 	}
 
-	public Cozinha salvar(Long cozinhaId, Cozinha cozinha) {
-		Cozinha cozinhaAtual = this.buscarPorId(cozinhaId);
-		BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
-		return salvar(cozinhaAtual);
+	public KitchenEntity save(Long id, KitchenEntity kitchen) {
+		KitchenEntity kitchenActual = this.findByIdOrFail(id);
+		BeanUtils.copyProperties(kitchen, kitchenActual, "id");
+		return save(kitchenActual);
 	}
 
 	@Transactional
-	public void excluir(Long cozinhaId) {
+	public void delete(Long id) {
 		try {
-			cozinhaRepository.deleteById(cozinhaId);
+			kitchenRepository.deleteById(id);
 			
 		} catch (EmptyResultDataAccessException e) {
-			throw new CozinhaNaoEncontradaException(cozinhaId);
+			throw new CozinhaNaoEncontradaException(id);
 		
 		} catch (DataIntegrityViolationException e) {
 			throw new EntidadeEmUsoException(
-				String.format(MSG_COZINHA_NAO_REMOVIDO, cozinhaId));
+				String.format(MSG_COZINHA_NAO_REMOVIDO, id));
 		}
 	}
 
-	public Cozinha buscarPorId(Long cozinhaId) {
-		return cozinhaRepository.findById(cozinhaId).orElseThrow(() -> new CozinhaNaoEncontradaException(cozinhaId));
+	public KitchenEntity findByIdOrFail(Long id) {
+		return kitchenRepository.findById(id).orElseThrow(() -> new CozinhaNaoEncontradaException(id));
 	}
 
-	public List<Cozinha> buscarTodas() {
-		return this.cozinhaRepository.findAll();
+	public List<KitchenEntity> findAll() {
+		return this.kitchenRepository.findAll();
 	}
 
 }

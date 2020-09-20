@@ -18,9 +18,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Configuration
 @EnableSwagger2
-@Import(BeanValidatorPluginsConfiguration.class) // integração com o bean validation do springfox, para adicionar required
+@Import(BeanValidatorPluginsConfiguration.class) // integração do springfox com o bean validation para adicionar required
 public class SpringFoxConfig implements WebMvcConfigurer {
-
 
     @Bean
     public Docket apiDocket() {
@@ -29,7 +28,7 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                 .apis(RequestHandlerSelectors.withClassAnnotation(RestController.class))
                 .build()
             .apiInfo(apiInfo())
-            .tags(new Tag("Cidades", "Gerencia as cidades"), tags());
+            .tags(new Tag("Cities", "Manage the cities"), tags());
     }
 
     @Override
@@ -43,18 +42,18 @@ public class SpringFoxConfig implements WebMvcConfigurer {
 
     private Tag [] tags() {
         return new Tag[] {
-                new Tag("Cozinhas", "Gerencia as cozinhas"),
-                new Tag("Estados", "Gerencia os estados"),
-                new Tag("Formas de pagamento", "Gerencia as formas de pagamentos"),
-                new Tag("Grupos", "Gerencia os grupos"),
-                new Tag("Restaurantes", "Gerencia os restaurantes")
+                new Tag("Kitchens", "Manage the kitchens"),
+                new Tag("States", "Manage the states"),
+                new Tag("Payments", "Manage the payments"),
+                new Tag("Groups", "Manage the groups"),
+                new Tag("Restaurants", "Manage the restaurants")
         };
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("Delivery API")
-                .description("API aberta para clientes de restaurante")
+                .description("API open for restaurant customers")
                 .version("1.0.0")
                 .contact(new Contact("Luciano Lima", "www.umlima.com.br", "luclimasilva23@gmail.com"))
                 .build();

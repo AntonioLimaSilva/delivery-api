@@ -2,9 +2,9 @@ package br.com.luciano.delivery.api.controller;
 
 import br.com.luciano.delivery.api.assembler.RestaurantAssembler;
 import br.com.luciano.delivery.api.assembler.RestaurantDisassembler;
-import br.com.luciano.delivery.api.model.RestauranteModel;
+import br.com.luciano.delivery.api.model.RestaurantModel;
 import br.com.luciano.delivery.api.model.input.RestauranteInput;
-import br.com.luciano.delivery.domain.model.Restaurante;
+import br.com.luciano.delivery.domain.entity.RestaurantEntity;
 import br.com.luciano.delivery.domain.service.RestaurantService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +16,9 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Api(tags = "Restaurantes")
+@Api(tags = "Restaurants")
 @RestController
-@RequestMapping(value = "/restaurantes")
+@RequestMapping(value = "/restaurants")
 public class RestaurantController {
 	
 	@Autowired
@@ -31,39 +31,38 @@ public class RestaurantController {
 	private RestaurantDisassembler restaurantDisassembler;
 	
 	@GetMapping
-	public List<RestauranteModel> searchAll() {
-		return restaurantService.buscarTodos().stream().map(r -> this.restaurantAssembler.toModel(r))
+	public List<RestaurantModel> searchAll() {
+		return restaurantService.findAll().stream().map(r -> this.restaurantAssembler.toModel(r))
 				.collect(Collectors.toList());
 	}
 	
-	@GetMapping("/{restauranteId}")
-	public RestauranteModel searchBy(@PathVariable Long restauranteId) {
-		return this.restaurantAssembler.toModel(restaurantService.buscarPorId(restauranteId));
+	@GetMapping("/{id}")
+	public RestaurantModel searchBy(@PathVariable Long id) {
+		return this.restaurantAssembler.toModel(restaurantService.findByIdOrFail(id));
 	}
 	
 	@PostMapping
-	public ResponseEntity<RestauranteModel> create(@RequestBody @Valid RestauranteInput restauranteInput) {
+	public ResponseEntity<RestaurantModel> create(@RequestBody @Valid RestauranteInput restauranteInput) {
 
-		Restaurante restaurante = this.restaurantService.salvar(this.restaurantDisassembler.toDomainObject(restauranteInput));
+		RestaurantEntity restaurant = this.restaurantService.save(this.restaurantDisassembler.toDomainObject(restauranteInput));
 
-		return ResponseEntity.status(HttpStatus.CREATED).body(restaurantAssembler.toModel(restaurante));
+		return ResponseEntity.status(HttpStatus.CREATED).body(restaurantAssembler.toModel(restaurant));
 	}
 
-	@PutMapping("/{restauranteId}/ativo")
+	@PutMapping("/{id}/active")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void activate(@PathVariable(name = "restauranteId") Long id) {
-		this.restaurantService.ativar(id);
+	public void activate(@PathVariable(name = "id") Long id) {
+		this.restaurantService.activate(id);
 	}
 
-	@DeleteMapping("/{restauranteId}/ativo")
+	@DeleteMapping("/{id}/active")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void inactivate(@PathVariable(name = "restauranteId") Long id) {
-		this.restaurantService.inativar(id);
+	public void inactivate(@PathVariable(name = "id") Long id) {
+		this.restaurantService.inactivate(id);
 	}
 	
-	@PutMapping("/{restauranteId}")
-	public RestauranteModel update(@PathVariable Long restauranteId, @Valid @RequestBody RestauranteInput restaurante) {
-		return this.restaurantAssembler.toModel(restaurantService.salvar(restauranteId, this.restaurantDisassembler.toDomainObject(restaurante)));
+	@PutMapping("/{id}")
+	public RestaurantModel update(@PathVariable Long id, @Valid @RequestBody RestauranteInput restaurant) {
+		return this.restaurantAssembler.toModel(restaurantService.save(id, this.restaurantDisassembler.toDomainObject(restaurant)));
 	}
-	
 }

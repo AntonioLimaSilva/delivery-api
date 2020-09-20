@@ -4,14 +4,11 @@ delete from cidade;
 delete from cozinha;
 delete from estado;
 delete from forma_pagamento;
-delete from grupo;
-delete from grupo_permissao;
 delete from permissao;
 delete from produto;
 delete from restaurante;
 delete from restaurante_forma_pagamento;
 delete from usuario;
-delete from usuario_grupo;
 
 set foreign_key_checks = 1;
 
@@ -19,7 +16,6 @@ alter table cidade auto_increment = 1;
 alter table cozinha auto_increment = 1;
 alter table estado auto_increment = 1;
 alter table forma_pagamento auto_increment = 1;
-alter table grupo auto_increment = 1;
 alter table permissao auto_increment = 1;
 alter table produto auto_increment = 1;
 alter table restaurante auto_increment = 1;
@@ -51,8 +47,19 @@ insert into forma_pagamento (id, descricao) values (1, 'Cartão de crédito');
 insert into forma_pagamento (id, descricao) values (2, 'Cartão de débito');
 insert into forma_pagamento (id, descricao) values (3, 'Dinheiro');
 
-insert into permissao (id, nome, descricao) values (1, 'CONSULTAR_COZINHAS', 'Permite consultar cozinhas');
-insert into permissao (id, nome, descricao) values (2, 'EDITAR_COZINHAS', 'Permite editar cozinhas');
+insert into usuario (id, nome, email, senha, data_cadastro) values
+(1, 'João da Silva', 'joao.ger@algafood.com', '123', utc_timestamp),
+(2, 'Maria Joaquina', 'maria.vnd@algafood.com', '123', utc_timestamp),
+(3, 'José Souza', 'jose.aux@algafood.com', '123', utc_timestamp),
+(4, 'Sebastião Martins', 'sebastiao.cad@algafood.com', '123', utc_timestamp),
+(5, 'Manoel Lima', 'manoel.loja@gmail.com', '123', utc_timestamp);
+
+insert into permissao (usuario_id, nome) values (1, 'ROLE_USER_CREATE');
+insert into permissao (usuario_id, nome) values (1, 'ROLE_USER_UPDATE');
+insert into permissao (usuario_id, nome) values (1, 'ROLE_USER_READ');
+insert into permissao (usuario_id, nome) values (1, 'ROLE_USER_DELETE');
+insert into permissao (usuario_id, nome) values (2, 'ROLE_USER_UPDATE');
+insert into permissao (usuario_id, nome) values (2, 'ROLE_USER_READ');
 
 insert into restaurante_forma_pagamento (restaurante_id, forma_pagamento_id) values (1, 1), (1, 2), (1, 3), (2, 3), (3, 2), (3, 3), (4, 1), (4, 2), (5, 1), (5, 2), (6, 3);
 

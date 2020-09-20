@@ -1,19 +1,19 @@
 package br.com.luciano.delivery.api.assembler;
 
-import br.com.luciano.delivery.api.model.EstadoModel;
-import br.com.luciano.delivery.domain.model.Estado;
+import br.com.luciano.delivery.api.model.input.CidadeInput;
+import br.com.luciano.delivery.domain.model.Cidade;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EstadoAssembler {
+public class CityDisassembler {
 
     @Autowired
     private ModelMapper modelMapper;
 
-    public EstadoModel toModel(Estado estado) {
-        return this.modelMapper.map(estado, EstadoModel.class);
+    public Cidade toDomainObject(CidadeInput cidadeInput) {
+        return this.modelMapper.map(cidadeInput, Cidade.class);
     }
 
 }

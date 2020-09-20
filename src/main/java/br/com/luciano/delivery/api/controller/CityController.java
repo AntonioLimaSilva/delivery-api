@@ -1,11 +1,11 @@
 package br.com.luciano.delivery.api.controller;
 
-import br.com.luciano.delivery.api.assembler.CidadeAssembler;
-import br.com.luciano.delivery.api.assembler.CidadeDisassembler;
+import br.com.luciano.delivery.api.assembler.CityAssembler;
+import br.com.luciano.delivery.api.assembler.CityDisassembler;
 import br.com.luciano.delivery.api.model.CidadeModel;
 import br.com.luciano.delivery.api.model.input.CidadeInput;
 import br.com.luciano.delivery.domain.model.Cidade;
-import br.com.luciano.delivery.domain.service.CadastroCidadeService;
+import br.com.luciano.delivery.domain.service.CityService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -23,61 +23,61 @@ import java.util.stream.Collectors;
 @Api(tags = "Cidades")
 @RestController
 @RequestMapping(value = "/cidades")
-public class CidadeController {
+public class CityController {
 
-	private static final Logger log = LoggerFactory.getLogger(CidadeController.class);
+	private static final Logger log = LoggerFactory.getLogger(CityController.class);
 	
 	@Autowired
-	private CadastroCidadeService cadastroCidade;
+	private CityService cityService;
 
 	@Autowired
-	private CidadeAssembler cidadeAssembler;
+	private CityAssembler cityAssembler;
 
 	@Autowired
-	private CidadeDisassembler cidadeDisassembler;
+	private CityDisassembler cityDisassembler;
 
 	@ApiOperation("Lista as cidades")
 	@GetMapping
-	public List<CidadeModel> listar() {
+	public List<CidadeModel> searchAll() {
 		log.debug("Início do processamento controller cidades");
 
-		return cadastroCidade.buscarTodas().stream()
-				.map(c -> this.cidadeAssembler.toModel(c))
+		return cityService.buscarTodas().stream()
+				.map(c -> this.cityAssembler.toModel(c))
 				.collect(Collectors.toList());
 	}
 
 	@ApiOperation("Buscar cidade por id")
 	@GetMapping("/{cidadeId}")
-	public CidadeModel buscar(@ApiParam(value = "ID de uma cidade", example = "1")
+	public CidadeModel searchBy(@ApiParam(value = "ID de uma cidade", example = "1")
 							  @PathVariable Long cidadeId) {
-		return this.cidadeAssembler.toModel(cadastroCidade.buscarPorId(cidadeId));
+		return this.cityAssembler.toModel(cityService.buscarPorId(cidadeId));
 	}
 
 	@ApiOperation("Adiciona uma cidade")
 	@PostMapping
-	public ResponseEntity<CidadeModel> adicionar(@ApiParam(name = "Corpo", value = "Representação de uma cidade")
+	public ResponseEntity<CidadeModel> create(@ApiParam(name = "Corpo", value = "Representação de uma cidade")
 												 @RequestBody @Valid CidadeInput cidadeInput) {
-		Cidade cidade = this.cidadeDisassembler.toDomainObject(cidadeInput);
-		CidadeModel cidadeModel = this.cidadeAssembler.toModel(cadastroCidade.salvar(cidade));
+		Cidade cidade = this.cityDisassembler.toDomainObject(cidadeInput);
+		CidadeModel cidadeModel = this.cityAssembler.toModel(cityService.salvar(cidade));
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(cidadeModel);
 	}
 
 	@ApiOperation("Altera uma cidade")
 	@PutMapping("/{cidadeId}")
-	public CidadeModel atualizar(@ApiParam(value = "ID de uma cidade", example = "1")
+	public CidadeModel update(@ApiParam(value = "ID de uma cidade", example = "1")
 								 @PathVariable Long cidadeId,
-								 @ApiParam(name = "Corpo", value = "Representação de uma cidade")
+							  @ApiParam(name = "Corpo", value = "Representação de uma cidade")
 								 @RequestBody CidadeInput cidadeInput) {
-		Cidade cidade = this.cidadeDisassembler.toDomainObject(cidadeInput);
-		return this.cidadeAssembler.toModel(this.cadastroCidade.salvar(cidadeId, cidade));
+		Cidade cidade = this.cityDisassembler.toDomainObject(cidadeInput);
+		return this.cityAssembler.toModel(this.cityService.salvar(cidadeId, cidade));
 	}
 
 	@ApiOperation("Remove uma cidade por id")
 	@DeleteMapping("/{cidadeId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void remover(@ApiParam(value = "ID de uma cidade", example = "1") @PathVariable Long cidadeId) {
-		cadastroCidade.excluir(cidadeId);
+	public void remove(@ApiParam(value = "ID de uma cidade", example = "1") @PathVariable Long cidadeId) {
+		cityService.excluir(cidadeId);
 	}
 	
 }

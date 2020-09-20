@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-public class CadastroCozinhaService {
+public class KitchenService {
 
 	private static final String MSG_COZINHA_NAO_REMOVIDO = "Cozinha de código %d não pode ser removida, pois está em uso";
 

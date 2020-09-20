@@ -1,19 +1,19 @@
 package br.com.luciano.delivery.api.assembler;
 
-import br.com.luciano.delivery.api.model.input.GrupoInput;
-import br.com.luciano.delivery.domain.model.Grupo;
+import br.com.luciano.delivery.api.model.EstadoModel;
+import br.com.luciano.delivery.domain.model.Estado;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GrupoDisassembler {
+public class CountryAssembler {
 
     @Autowired
     private ModelMapper modelMapper;
 
-    public Grupo toDomainObject(GrupoInput grupoInput) {
-        return modelMapper.map(grupoInput, Grupo.class);
+    public EstadoModel toModel(Estado estado) {
+        return this.modelMapper.map(estado, EstadoModel.class);
     }
 
 }

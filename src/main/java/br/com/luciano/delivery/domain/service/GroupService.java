@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-public class CadastroGrupoService {
+public class GroupService {
 
     @Autowired
     private GrupoRepository grupoRepository;

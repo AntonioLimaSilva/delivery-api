@@ -19,9 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-public class CadastroCidadeService {
+public class CityService {
 
-	private static final Logger log = LoggerFactory.getLogger(CadastroCidadeService.class);
+	private static final Logger log = LoggerFactory.getLogger(CityService.class);
 
 	private static final String MSG_CIDADE = "Cidade de código %d não pode ser removida, pois está em uso";
 
@@ -29,7 +29,7 @@ public class CadastroCidadeService {
 	private CidadeRepository cidadeRepository;
 	
 	@Autowired
-	private CadastroEstadoService cadastroEstadoService;
+	private CountryService countryService;
 
 	@Transactional
 	public Cidade salvar(Cidade cidade) {
@@ -37,7 +37,7 @@ public class CadastroCidadeService {
 
 		Estado estado;
 		try {
-			estado = cadastroEstadoService.buscarPorId(estadoId);
+			estado = countryService.buscarPorId(estadoId);
 		} catch (EstadoNaoEncontradoException ex) {
 			throw new NegocioException(ex.getMessage(), ex);
 		}

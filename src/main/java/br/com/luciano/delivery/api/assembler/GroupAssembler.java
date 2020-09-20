@@ -1,19 +1,19 @@
 package br.com.luciano.delivery.api.assembler;
 
-import br.com.luciano.delivery.api.model.CozinhaModel;
-import br.com.luciano.delivery.domain.model.Cozinha;
+import br.com.luciano.delivery.api.model.GrupoModel;
+import br.com.luciano.delivery.domain.model.Grupo;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CozinhaAssembler {
+public class GroupAssembler {
 
     @Autowired
     private ModelMapper modelMapper;
 
-    public CozinhaModel toModel(Cozinha cozinha) {
-        return modelMapper.map(cozinha, CozinhaModel.class);
+    public GrupoModel toModel(Grupo grupo) {
+        return this.modelMapper.map(grupo, GrupoModel.class);
     }
 
 }

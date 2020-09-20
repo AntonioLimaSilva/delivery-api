@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-public class CadastroEstadoService {
+public class CountryService {
 
 	private static final String MSG_ESTADO_NAO_REMOVIDO = "Estado de código %d não pode ser removido, pois está em uso";
 

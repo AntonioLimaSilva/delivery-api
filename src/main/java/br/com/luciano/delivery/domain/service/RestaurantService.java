@@ -3,7 +3,6 @@ package br.com.luciano.delivery.domain.service;
 import br.com.luciano.delivery.domain.exception.*;
 import br.com.luciano.delivery.domain.model.Cidade;
 import br.com.luciano.delivery.domain.model.Cozinha;
-import br.com.luciano.delivery.domain.model.Endereco;
 import br.com.luciano.delivery.domain.model.Restaurante;
 import br.com.luciano.delivery.domain.repository.RestauranteRepository;
 import org.springframework.beans.BeanUtils;
@@ -11,25 +10,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Service
-public class CadastroRestauranteService {
+public class RestaurantService {
 
 	@Autowired
 	private RestauranteRepository restauranteRepository;
 	
 	@Autowired
-	private CadastroCozinhaService cadastroCozinhaService;
+	private KitchenService kitchenService;
 
 	@Autowired
-	private CadastroCidadeService cadastroCidadeService;
+	private CityService cityService;
 
 	@Transactional
 	public Restaurante salvar(Restaurante restaurante) {
-		Cozinha cozinha = cadastroCozinhaService.buscarPorId(restaurante.getCozinha().getId());
-		Cidade cidade = cadastroCidadeService.buscarPorId(restaurante.getEndereco().getCidade().getId());
+		Cozinha cozinha = kitchenService.buscarPorId(restaurante.getCozinha().getId());
+		Cidade cidade = cityService.buscarPorId(restaurante.getEndereco().getCidade().getId());
 
 		restaurante.setCozinha(cozinha);
 		restaurante.getEndereco().setCidade(cidade);

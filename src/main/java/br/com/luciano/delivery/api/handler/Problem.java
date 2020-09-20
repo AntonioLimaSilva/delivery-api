@@ -12,17 +12,17 @@ import java.util.List;
 @Builder
 public class Problem {
 
-    private Integer status;
-    private String type;
-    private String title;
-    private String detail;
-    private List<Field> fields;
+    private final Integer status;
+    private final String type;
+    private final String title;
+    private final String detail;
+    private final List<Field> fields;
 
     @Builder
     @Getter
     @AllArgsConstructor
     public static class Field {
-        private String name;
-        private String message;
+        private final String name;
+        private final String message;
     }
 }

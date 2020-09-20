@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RestauranteAssembler {
+public class RestaurantAssembler {
 
     @Autowired
     private ModelMapper modelMapper;

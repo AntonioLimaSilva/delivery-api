@@ -8,6 +8,6 @@ import lombok.Setter;
 public class GroupModel {
 
     private Long id;
-    private String nome;
+    private String name;
 
 }

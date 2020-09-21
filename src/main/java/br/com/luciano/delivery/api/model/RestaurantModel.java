@@ -1,16 +1,18 @@
 package br.com.luciano.delivery.api.model;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
-@Data
+@Getter
+@Setter
 public class RestaurantModel {
 
     private Long id;
     private String nome;
-    private BigDecimal taxaFrete;
-    private KitchenModel cozinha;
-    private Boolean ativo;
-    private EnderecoModel endereco;
+    private BigDecimal shippingFee;
+    private KitchenModel kitchen;
+    private Boolean active;
+    private AddressModel address;
 }

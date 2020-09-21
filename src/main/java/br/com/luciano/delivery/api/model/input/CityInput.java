@@ -15,5 +15,5 @@ public class CityInput {
     private String name;
     @Valid
     @NotNull
-    private CountryIdInput country;
+    private StateIdInput state;
 }

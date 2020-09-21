@@ -1,8 +1,10 @@
 package br.com.luciano.delivery.api.model;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class KitchenModel {
 
     private Long id;

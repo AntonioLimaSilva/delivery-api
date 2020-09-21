@@ -55,7 +55,7 @@ public class CityController {
 
 	@ApiOperation("Create new city")
 	@PostMapping
-	public ResponseEntity<CityModel> create(@ApiParam(name = "Corpo", value = "Representação de uma cidade")
+	public ResponseEntity<CityModel> create(@ApiParam(name = "Body city", value = "Representation of city")
 												 @RequestBody @Valid CityInput cityInput) {
 		CityEntity cityEntity = this.cityDisassembler.toDomainObject(cityInput);
 		CityModel cityModel = this.cityAssembler.toModel(cityService.save(cityEntity));
@@ -65,7 +65,7 @@ public class CityController {
 
 	@ApiOperation("Update city existing")
 	@PutMapping("/{id}")
-	public CityModel update(@ApiParam(value = "ID de uma cidade", example = "1")
+	public CityModel update(@ApiParam(value = "Id of city", example = "1")
 								 @PathVariable Long id,
 							@ApiParam(name = "Body city", value = "Representation of city")
 								 @RequestBody CityInput cityInput) {

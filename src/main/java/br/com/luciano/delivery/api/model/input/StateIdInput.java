@@ -6,7 +6,7 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class CountryIdInput {
+public class StateIdInput {
 
     @ApiModelProperty(example = "1", required = true)
     @NotNull

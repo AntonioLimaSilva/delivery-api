@@ -1,6 +1,6 @@
 package br.com.luciano.delivery.core.config;
 
-import br.com.luciano.delivery.api.model.EnderecoModel;
+import br.com.luciano.delivery.api.model.AddressModel;
 import br.com.luciano.delivery.domain.entity.Address;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
@@ -14,10 +14,10 @@ public class ModelMapperConfig {
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
 
-        TypeMap<Address, EnderecoModel> typeMap = modelMapper.createTypeMap(Address.class, EnderecoModel.class);
+        TypeMap<Address, AddressModel> typeMap = modelMapper.createTypeMap(Address.class, AddressModel.class);
 
         typeMap.<String>addMapping(src -> src.getCity().getState().getName(),
-                (dest, value) -> dest.getCidade().setCountry(value));
+                (dest, value) -> dest.getCity().setState(value));
 
         return modelMapper;
     }

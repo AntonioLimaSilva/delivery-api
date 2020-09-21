@@ -1,11 +1,13 @@
 package br.com.luciano.delivery.api.model;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class PaymentModel {
 
     private Long id;
-    private String descricao;
+    private String description;
 
 }

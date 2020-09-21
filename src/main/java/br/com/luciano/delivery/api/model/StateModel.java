@@ -1,13 +1,15 @@
 package br.com.luciano.delivery.api.model;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class StateModel {
 
     @ApiModelProperty(example = "1")
     private Long id;
     @ApiModelProperty(example = "Ceará")
-    private String nome;
+    private String name;
 }

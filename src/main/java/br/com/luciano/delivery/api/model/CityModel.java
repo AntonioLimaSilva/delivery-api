@@ -13,6 +13,6 @@ public class CityModel {
     @ApiModelProperty(example = "Fortaleza")
     private String name;
 
-    private StateModel country;
+    private StateModel state;
 
 }

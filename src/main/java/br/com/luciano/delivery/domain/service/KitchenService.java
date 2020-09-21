@@ -16,11 +16,12 @@ import java.util.List;
 @Service
 public class KitchenService {
 
-	private static final String MSG_COZINHA_NAO_REMOVIDO = "Cozinha de código %d não pode ser removida, pois está em uso";
+	private static final String MSG_KITCHEN_NOT_REMOVED = "Cozinha de código %d não pode ser removida, pois está em uso";
 
 	@Autowired
 	private KitchenRepository kitchenRepository;
-	
+
+	@Transactional
 	public KitchenEntity save(KitchenEntity kitchen) {
 		return kitchenRepository.save(kitchen);
 	}
@@ -41,7 +42,7 @@ public class KitchenService {
 		
 		} catch (DataIntegrityViolationException e) {
 			throw new EntidadeEmUsoException(
-				String.format(MSG_COZINHA_NAO_REMOVIDO, id));
+				String.format(MSG_KITCHEN_NOT_REMOVED, id));
 		}
 	}
 

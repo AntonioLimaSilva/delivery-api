@@ -23,7 +23,7 @@ public class CityService {
 
 	private static final Logger log = LoggerFactory.getLogger(CityService.class);
 
-	private static final String MSG_CIDADE = "Cidade de código %d não pode ser removida, pois está em uso";
+	private static final String MESSAGE_CITY = "Cidade de código %d não pode ser removida, pois está em uso";
 
 	@Autowired
 	private CityRepository cityRepository;
@@ -58,7 +58,7 @@ public class CityService {
 		
 		} catch (DataIntegrityViolationException e) {
 			throw new EntidadeEmUsoException(
-				String.format(MSG_CIDADE, id));
+				String.format(MESSAGE_CITY, id));
 		}
 	}
 

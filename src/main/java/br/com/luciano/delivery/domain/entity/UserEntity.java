@@ -1,15 +1,13 @@
 package br.com.luciano.delivery.domain.entity;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.CreationTimestamp;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.persistence.*;
-
-import org.hibernate.annotations.CreationTimestamp;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -36,8 +34,8 @@ public class UserEntity {
 	private LocalDateTime createAt;
 	
 	@ManyToMany
-	@JoinTable(name = "usuario_grupo", joinColumns = @JoinColumn(name = "usuario_id"),
-			inverseJoinColumns = @JoinColumn(name = "grupo_id"))
-	private List<Group> groups = new ArrayList<>();
+	@JoinTable(name = "usuario_permissao", joinColumns = @JoinColumn(name = "usuario_id"),
+			inverseJoinColumns = @JoinColumn(name = "permissao_id"))
+	private List<PermissionEntity> permissions = new ArrayList<>();
 	
 }

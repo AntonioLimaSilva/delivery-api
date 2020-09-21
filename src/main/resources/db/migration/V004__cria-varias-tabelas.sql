@@ -51,13 +51,18 @@ create table usuario (
 ) engine=InnoDB default charset=utf8;
 
 create table permissao (
-  usuario_id bigint(20) not null,
-  nome varchar(60) not null
+    id bigint(20) not null,
+    nome varchar(60) not null,
 
+    primary key (id)
 ) engine=InnoDB default charset=utf8;
 
-alter table permissao add constraint fk_usuario_permissao
-foreign key (usuario_id) references usuario (id);
+create table usuario_permissao (
+	usuario_id bigint not null,
+	permissao_id bigint not null,
+
+	primary key (usuario_id, permissao_id)
+) engine=InnoDB default charset=utf8;
 
 alter table produto add constraint fk_produto_restaurante
 foreign key (restaurante_id) references restaurante (id);
@@ -73,3 +78,9 @@ foreign key (forma_pagamento_id) references forma_pagamento (id);
 
 alter table restaurante_forma_pagamento add constraint fk_rest_forma_pagto_restaurante
 foreign key (restaurante_id) references restaurante (id);
+
+alter table usuario_permissao add constraint fk_usua_usuario_permissao
+foreign key (usuario_id) references usuario (id);
+
+alter table usuario_permissao add constraint fk_perm_usuario_permissao
+foreign key (permissao_id) references permissao (id);

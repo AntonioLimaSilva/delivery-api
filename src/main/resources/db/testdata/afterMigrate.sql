@@ -54,12 +54,12 @@ insert into usuario (id, nome, email, senha, data_cadastro) values
 (4, 'Sebastião Martins', 'sebastiao.cad@algafood.com', '123', utc_timestamp),
 (5, 'Manoel Lima', 'manoel.loja@gmail.com', '123', utc_timestamp);
 
-insert into permissao (usuario_id, nome) values (1, 'ROLE_USER_CREATE');
-insert into permissao (usuario_id, nome) values (1, 'ROLE_USER_UPDATE');
-insert into permissao (usuario_id, nome) values (1, 'ROLE_USER_READ');
-insert into permissao (usuario_id, nome) values (1, 'ROLE_USER_DELETE');
-insert into permissao (usuario_id, nome) values (2, 'ROLE_USER_UPDATE');
-insert into permissao (usuario_id, nome) values (2, 'ROLE_USER_READ');
+insert into permissao (id, nome) values (1, 'ROLE_USER_CREATE');
+insert into permissao (id, nome) values (2, 'ROLE_USER_UPDATE');
+insert into permissao (id, nome) values (3, 'ROLE_USER_READ');
+insert into permissao (id, nome) values (4, 'ROLE_USER_DELETE');
+insert into permissao (id, nome) values (5, 'ROLE_USER_UPDATE');
+insert into permissao (id, nome) values (6, 'ROLE_USER_READ');
 
 insert into restaurante_forma_pagamento (restaurante_id, forma_pagamento_id) values (1, 1), (1, 2), (1, 3), (2, 3), (3, 2), (3, 3), (4, 1), (4, 2), (5, 1), (5, 2), (6, 3);
 

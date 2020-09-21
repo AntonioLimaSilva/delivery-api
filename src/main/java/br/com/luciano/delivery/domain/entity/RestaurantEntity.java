@@ -1,6 +1,5 @@
 package br.com.luciano.delivery.domain.entity;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -14,15 +13,9 @@ import java.util.List;
 
 @Getter
 @Setter
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "restaurante")
-public class RestaurantEntity {
-
-	@EqualsAndHashCode.Include
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+public class RestaurantEntity extends IdBase {
 
 	@Column(name="nome", nullable = false)
 	private String name;

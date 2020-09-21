@@ -1,27 +1,21 @@
 package br.com.luciano.delivery.domain.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.*;
-
-import org.hibernate.annotations.CreationTimestamp;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
-@Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Getter
+@Setter
 @Entity
 @Table(name = "pedido")
-public class OrderEntity {
+public class OrderEntity extends IdBase {
 
-	@EqualsAndHashCode.Include
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
 	private BigDecimal subtotal;
 	@Column(name = "taxa_frete")
 	private BigDecimal shippingFee;

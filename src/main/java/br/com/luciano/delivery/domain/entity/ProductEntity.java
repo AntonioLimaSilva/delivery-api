@@ -6,17 +6,14 @@ import javax.persistence.*;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Getter
+@Setter
 @Entity
 @Table(name = "produto")
-public class ProductEntity {
-
-	@EqualsAndHashCode.Include
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+public class ProductEntity extends IdBase {
 
 	@Column(name="nome", nullable = false)
 	private String name;

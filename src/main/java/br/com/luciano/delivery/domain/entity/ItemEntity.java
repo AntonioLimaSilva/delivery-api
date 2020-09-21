@@ -1,21 +1,17 @@
 package br.com.luciano.delivery.domain.entity;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 
-@Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Getter
+@Setter
 @Entity
 @Table(name = "item_pedido")
-public class ItemEntity {
+public class ItemEntity extends IdBase {
 
-	@EqualsAndHashCode.Include
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
 	@Column(name = "preco_unitario")
 	private BigDecimal unitPrice;
 	@Column(name = "preco_total")

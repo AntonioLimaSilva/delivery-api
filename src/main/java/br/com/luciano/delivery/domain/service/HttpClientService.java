@@ -19,7 +19,7 @@ public class HttpClientService {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
         HttpEntity<?> entity = new HttpEntity<>(headers);
-        return restTemplate.exchange("http://localhost:8089/payment/payments/{number}", HttpMethod.GET, entity,
+        return restTemplate.exchange("http://payment/payment/payments/{number}", HttpMethod.GET, entity,
                 PaymentResponse.class, number).getBody();
     }
 

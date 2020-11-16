@@ -1,6 +1,8 @@
 package br.com.luciano.delivery.domain.service;
 
+import br.com.luciano.delivery.api.model.PaymentResponse;
 import br.com.luciano.delivery.domain.entity.*;
+import br.com.luciano.delivery.domain.exception.PaymentInvalidException;
 import br.com.luciano.delivery.domain.repository.OrderRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ public class OrderService {
     private final UserService userService;
     private final RestaurantService restaurantService;
     private final PaymentService paymentService;
+    private final HttpClientService httpClientService;
 
     @Transactional
     public OrderEntity emit(OrderEntity newOrder) {
@@ -37,6 +40,12 @@ public class OrderService {
         UserEntity client = userService.findOrFail(newOrder.getUser().getId());
         RestaurantEntity restaurantEntity = restaurantService.findOrFail(newOrder.getRestaurant().getId());
         PaymentEntity paymentEntity = paymentService.findByIdOrFail(newOrder.getPayment().getId());
+
+        PaymentResponse response = this.httpClientService.find(paymentEntity.getNumber());
+
+        if (!response.isAuthorized()) {
+            throw new PaymentInvalidException();
+        }
 
         newOrder.getAddress().setCity(cityEntity);
         newOrder.setUser(client);

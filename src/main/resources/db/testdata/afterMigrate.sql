@@ -43,9 +43,9 @@ insert into restaurante (id, nome, taxa_frete, cozinha_id, data_cadastro, data_a
 insert into restaurante (id, nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao, ativo) values (5, 'Lanchonete do Tio Sam', 11, 4, utc_timestamp, utc_timestamp, 1);
 insert into restaurante (id, nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao, ativo) values (6, 'Bar da Maria', 6, 4, utc_timestamp, utc_timestamp, 1);
 
-insert into forma_pagamento (id, descricao) values (1, 'Cartão de crédito');
-insert into forma_pagamento (id, descricao) values (2, 'Cartão de débito');
-insert into forma_pagamento (id, descricao) values (3, 'Dinheiro');
+insert into forma_pagamento (id, descricao, numero) values (1, 'Cartão de crédito', '9876098712340988');
+insert into forma_pagamento (id, descricao, numero) values (2, 'Cartão de débito', '9876098712340986');
+insert into forma_pagamento (id, descricao, numero) values (3, 'Dinheiro', '9876098712340987');
 
 insert into usuario (id, nome, email, senha, data_cadastro) values
 (1, 'João da Silva', 'joao.ger@algafood.com', '123', utc_timestamp),

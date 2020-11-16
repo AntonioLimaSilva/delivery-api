@@ -15,5 +15,6 @@ public class PaymentEntity extends IdBase {
 	
 	@Column(name = "descricao", nullable = false)
 	private String description;
-	
+	@Column(name = "numero")
+	private String number;
 }

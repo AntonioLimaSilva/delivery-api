@@ -1,4 +1,4 @@
-package br.com.luciano.delivery.core.config;
+package br.com.luciano.delivery.core.mapper;
 
 import br.com.luciano.delivery.api.model.AddressModel;
 import br.com.luciano.delivery.api.model.input.ItemInput;

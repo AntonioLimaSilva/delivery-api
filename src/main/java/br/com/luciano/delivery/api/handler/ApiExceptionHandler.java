@@ -1,9 +1,6 @@
 package br.com.luciano.delivery.api.handler;
 
-import br.com.luciano.delivery.domain.exception.EntityInUseException;
-import br.com.luciano.delivery.domain.exception.EntityNotFoundException;
-import br.com.luciano.delivery.domain.exception.BusinessException;
-import br.com.luciano.delivery.domain.exception.ValidationRestaurantException;
+import br.com.luciano.delivery.domain.exception.*;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
@@ -47,7 +44,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<Object> handleNegocioException(BusinessException ex, WebRequest webRequest) {
+    public ResponseEntity<Object> handleBusinessException(BusinessException ex, WebRequest webRequest) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         Problem problem = createProblemBuilder(status, ProblemType.ERRO_NEGOCIO, ex.getMessage()).build();
 

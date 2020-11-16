@@ -1,0 +1,1 @@
+alter table forma_pagamento add numero varchar(80) not null;

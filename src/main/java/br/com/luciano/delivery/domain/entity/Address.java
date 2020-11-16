@@ -13,13 +13,13 @@ public class Address {
 	@Column(name = "endereco_cep")
 	private String cep;
 	@Column(name = "endereco_logradouro")
-	private String addressName;
+	private String street;
 	@Column(name = "endereco_numero")
 	private String number;
 	@Column(name = "endereco_complemento")
 	private String complement;
 	@Column(name = "endereco_bairro")
-	private String district;
+	private String neighborhood;
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "endereco_cidade_id")
 	private CityEntity city;

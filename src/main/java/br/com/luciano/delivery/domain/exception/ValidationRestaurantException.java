@@ -6,8 +6,8 @@ import org.springframework.validation.BindingResult;
 
 @AllArgsConstructor
 @Getter
-public class ValidationRestauranteException extends RuntimeException {
+public class ValidationRestaurantException extends RuntimeException {
 
-    private BindingResult bindingResult;
+    private final transient BindingResult bindingResult;
 
 }

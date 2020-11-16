@@ -36,7 +36,7 @@ public class RestaurantService {
 	}
 
     public RestaurantEntity findByIdOrFail(Long id) {
-		return this.restaurantRepository.findById(id).orElseThrow(() -> new RestauranteNaoEncontradoException(id));
+		return this.restaurantRepository.findById(id).orElseThrow(() -> new RestaurantNotFoundException(id));
     }
 
     @Transactional
@@ -58,6 +58,11 @@ public class RestaurantService {
 	public void inactivate(Long id) {
 		RestaurantEntity restaurant = this.findByIdOrFail(id);
 		restaurant.setActive(false);
+	}
+
+	public RestaurantEntity findOrFail(Long restaurantId) {
+		return this.restaurantRepository.findById(restaurantId)
+				.orElseThrow(() -> new RestaurantNotFoundException(restaurantId));
 	}
 
 	public List<RestaurantEntity> findAll() {

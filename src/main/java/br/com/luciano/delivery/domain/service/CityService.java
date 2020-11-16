@@ -2,10 +2,10 @@ package br.com.luciano.delivery.domain.service;
 
 import br.com.luciano.delivery.domain.entity.CityEntity;
 import br.com.luciano.delivery.domain.entity.StateEntity;
-import br.com.luciano.delivery.domain.exception.CidadeNaoEncontradaException;
-import br.com.luciano.delivery.domain.exception.EntidadeEmUsoException;
-import br.com.luciano.delivery.domain.exception.EstadoNaoEncontradoException;
-import br.com.luciano.delivery.domain.exception.NegocioException;
+import br.com.luciano.delivery.domain.exception.CityNotFoundException;
+import br.com.luciano.delivery.domain.exception.EntityInUseException;
+import br.com.luciano.delivery.domain.exception.StateNotFoundException;
+import br.com.luciano.delivery.domain.exception.BusinessException;
 import br.com.luciano.delivery.domain.repository.CityRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,8 +38,8 @@ public class CityService {
 		StateEntity stateEntity;
 		try {
 			stateEntity = stateService.findByIdOrFail(stateId);
-		} catch (EstadoNaoEncontradoException ex) {
-			throw new NegocioException(ex.getMessage(), ex);
+		} catch (StateNotFoundException ex) {
+			throw new BusinessException(ex.getMessage(), ex);
 		}
 		
 		cityEntity.setState(stateEntity);
@@ -54,17 +54,17 @@ public class CityService {
 			cityRepository.flush();
 
 		} catch (EmptyResultDataAccessException e) {
-			throw new CidadeNaoEncontradaException(id);
+			throw new CityNotFoundException(id);
 		
 		} catch (DataIntegrityViolationException e) {
-			throw new EntidadeEmUsoException(
+			throw new EntityInUseException(
 				String.format(MESSAGE_CITY, id));
 		}
 	}
 
     public CityEntity findByIdOrFail(Long id) {
 		return this.cityRepository.findById(id)
-				.orElseThrow(() -> new CidadeNaoEncontradaException(id));
+				.orElseThrow(() -> new CityNotFoundException(id));
     }
 
     @Transactional

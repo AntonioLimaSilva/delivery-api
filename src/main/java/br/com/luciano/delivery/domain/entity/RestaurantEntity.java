@@ -31,7 +31,7 @@ public class RestaurantEntity extends IdBase {
 	private Address address;
 
 	@CreationTimestamp
-	@Column(name="data_criacao", nullable = false, columnDefinition = "datetime")
+	@Column(name="data_cadastro", nullable = false, columnDefinition = "datetime")
 	private OffsetDateTime createAt;
 
 	@UpdateTimestamp

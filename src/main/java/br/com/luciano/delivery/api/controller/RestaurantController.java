@@ -3,7 +3,7 @@ package br.com.luciano.delivery.api.controller;
 import br.com.luciano.delivery.api.assembler.RestaurantAssembler;
 import br.com.luciano.delivery.api.assembler.RestaurantDisassembler;
 import br.com.luciano.delivery.api.model.RestaurantModel;
-import br.com.luciano.delivery.api.model.input.RestauranteInput;
+import br.com.luciano.delivery.api.model.input.RestaurantInput;
 import br.com.luciano.delivery.domain.entity.RestaurantEntity;
 import br.com.luciano.delivery.domain.service.RestaurantService;
 import io.swagger.annotations.Api;
@@ -42,9 +42,9 @@ public class RestaurantController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<RestaurantModel> create(@RequestBody @Valid RestauranteInput restauranteInput) {
+	public ResponseEntity<RestaurantModel> create(@RequestBody @Valid RestaurantInput restaurantInput) {
 
-		RestaurantEntity restaurant = this.restaurantService.save(this.restaurantDisassembler.toDomainObject(restauranteInput));
+		RestaurantEntity restaurant = this.restaurantService.save(this.restaurantDisassembler.toDomainObject(restaurantInput));
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(restaurantAssembler.toModel(restaurant));
 	}
@@ -62,7 +62,7 @@ public class RestaurantController {
 	}
 	
 	@PutMapping("/{id}")
-	public RestaurantModel update(@PathVariable Long id, @Valid @RequestBody RestauranteInput restaurant) {
+	public RestaurantModel update(@PathVariable Long id, @Valid @RequestBody RestaurantInput restaurant) {
 		return this.restaurantAssembler.toModel(restaurantService.save(id, this.restaurantDisassembler.toDomainObject(restaurant)));
 	}
 }

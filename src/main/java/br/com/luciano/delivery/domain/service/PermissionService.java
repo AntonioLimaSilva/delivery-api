@@ -1,7 +1,7 @@
 package br.com.luciano.delivery.domain.service;
 
 import br.com.luciano.delivery.domain.entity.PermissionEntity;
-import br.com.luciano.delivery.domain.exception.GrupoNaoEncontradoException;
+import br.com.luciano.delivery.domain.exception.GroupNotFoundException;
 import br.com.luciano.delivery.domain.repository.PermissionRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ public class PermissionService {
     }
 
     public PermissionEntity findByIdOrFail(Long id) {
-        return permissionRepository.findById(id).orElseThrow(() -> new GrupoNaoEncontradoException(id));
+        return permissionRepository.findById(id).orElseThrow(() -> new GroupNotFoundException(id));
     }
 
     @Transactional

@@ -17,10 +17,12 @@ import java.util.List;
 public class OrderEntity extends IdBase {
 
 	private BigDecimal subtotal;
+
 	@Column(name = "taxa_frete")
 	private BigDecimal shippingFee;
+
 	@Column(name = "valor_total")
-	private BigDecimal amount;
+	private BigDecimal total;
 
 	@Embedded
 	private Address address;
@@ -28,9 +30,16 @@ public class OrderEntity extends IdBase {
 	private StatusOrder status;
 	
 	@CreationTimestamp
+	@Column(name = "data_criacao")
 	private LocalDateTime createAt;
+
+	@Column(name = "data_confirmacao")
 	private LocalDateTime confirmationAt;
+
+	@Column(name = "data_cancelamento")
 	private LocalDateTime cancellationAt;
+
+	@Column(name = "data_entrega")
 	private LocalDateTime deliveryAt;
 	
 	@ManyToOne
@@ -45,7 +54,7 @@ public class OrderEntity extends IdBase {
 	@JoinColumn(name = "usuario_cliente_id", nullable = false)
 	private UserEntity user;
 	
-	@OneToMany(mappedBy = "order")
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ItemEntity> items = new ArrayList<>();
 
 }

@@ -9,7 +9,7 @@ import javax.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 
 @Data
-public class RestauranteInput {
+public class RestaurantInput {
 
     @NotBlank
     private String nome;
@@ -23,5 +23,5 @@ public class RestauranteInput {
     private KitchenIdInput cozinha;
     @Valid
     @NotNull
-    private EnderecoInput endereco;
+    private AddressInput endereco;
 }

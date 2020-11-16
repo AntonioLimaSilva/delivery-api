@@ -1,14 +1,16 @@
 package br.com.luciano.delivery.api.model;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class AddressModel {
 
     private String cep;
-    private String addressName;
+    private String street;
     private String number;
     private String note;
-    private String district;
+    private String neighborhood;
     private CityResumeModel city;
 }

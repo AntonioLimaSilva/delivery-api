@@ -25,7 +25,7 @@ public class UserEntity extends IdBase {
 	private String password;
 	
 	@CreationTimestamp
-	@Column(nullable = false, columnDefinition = "datetime")
+	@Column(name = "data_cadastro", nullable = false, columnDefinition = "datetime")
 	private LocalDateTime createAt;
 	
 	@ManyToMany

@@ -1,8 +1,8 @@
 package br.com.luciano.delivery.domain.service;
 
 import br.com.luciano.delivery.domain.entity.StateEntity;
-import br.com.luciano.delivery.domain.exception.EntidadeEmUsoException;
-import br.com.luciano.delivery.domain.exception.EstadoNaoEncontradoException;
+import br.com.luciano.delivery.domain.exception.EntityInUseException;
+import br.com.luciano.delivery.domain.exception.StateNotFoundException;
 import br.com.luciano.delivery.domain.repository.StateRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,17 +32,17 @@ public class StateService {
 			stateRepository.deleteById(id);
 			
 		} catch (EmptyResultDataAccessException e) {
-			throw new EstadoNaoEncontradoException(id);
+			throw new StateNotFoundException(id);
 		
 		} catch (DataIntegrityViolationException e) {
-			throw new EntidadeEmUsoException(
+			throw new EntityInUseException(
 				String.format(MSG_ESTADO_NAO_REMOVIDO, id));
 		}
 	}
 
     public StateEntity findByIdOrFail(Long id) {
 		return this.stateRepository.findById(id)
-				.orElseThrow(() -> new EstadoNaoEncontradoException(id));
+				.orElseThrow(() -> new StateNotFoundException(id));
     }
 
     @Transactional

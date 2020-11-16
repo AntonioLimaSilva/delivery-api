@@ -1,8 +1,8 @@
 package br.com.luciano.delivery.domain.service;
 
 import br.com.luciano.delivery.domain.entity.KitchenEntity;
-import br.com.luciano.delivery.domain.exception.CozinhaNaoEncontradaException;
-import br.com.luciano.delivery.domain.exception.EntidadeEmUsoException;
+import br.com.luciano.delivery.domain.exception.KitchenNotFoundException;
+import br.com.luciano.delivery.domain.exception.EntityInUseException;
 import br.com.luciano.delivery.domain.repository.KitchenRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,16 +38,16 @@ public class KitchenService {
 			kitchenRepository.deleteById(id);
 			
 		} catch (EmptyResultDataAccessException e) {
-			throw new CozinhaNaoEncontradaException(id);
+			throw new KitchenNotFoundException(id);
 		
 		} catch (DataIntegrityViolationException e) {
-			throw new EntidadeEmUsoException(
+			throw new EntityInUseException(
 				String.format(MSG_KITCHEN_NOT_REMOVED, id));
 		}
 	}
 
 	public KitchenEntity findByIdOrFail(Long id) {
-		return kitchenRepository.findById(id).orElseThrow(() -> new CozinhaNaoEncontradaException(id));
+		return kitchenRepository.findById(id).orElseThrow(() -> new KitchenNotFoundException(id));
 	}
 
 	public List<KitchenEntity> findAll() {

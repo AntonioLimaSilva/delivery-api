@@ -1,6 +1,6 @@
 package br.com.luciano.delivery.domain.service;
 
-import br.com.luciano.delivery.domain.exception.FormaPagamentoNaoEncontradaException;
+import br.com.luciano.delivery.domain.exception.PaymentNotFoundException;
 import br.com.luciano.delivery.domain.entity.PaymentEntity;
 import br.com.luciano.delivery.domain.repository.PaymentRepository;
 import org.springframework.beans.BeanUtils;
@@ -27,7 +27,7 @@ public class PaymentService {
 
     @Transactional
     public PaymentEntity findByIdOrFail(Long id) {
-        return paymentRepository.findById(id).orElseThrow(() -> new FormaPagamentoNaoEncontradaException(id));
+        return paymentRepository.findById(id).orElseThrow(() -> new PaymentNotFoundException(id));
     }
 
     @Transactional

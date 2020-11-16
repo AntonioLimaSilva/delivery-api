@@ -1,9 +1,9 @@
 package br.com.luciano.delivery.api.handler;
 
-import br.com.luciano.delivery.domain.exception.EntidadeEmUsoException;
-import br.com.luciano.delivery.domain.exception.EntidadeNaoEncontradaException;
-import br.com.luciano.delivery.domain.exception.NegocioException;
-import br.com.luciano.delivery.domain.exception.ValidationRestauranteException;
+import br.com.luciano.delivery.domain.exception.EntityInUseException;
+import br.com.luciano.delivery.domain.exception.EntityNotFoundException;
+import br.com.luciano.delivery.domain.exception.BusinessException;
+import br.com.luciano.delivery.domain.exception.ValidationRestaurantException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
@@ -38,24 +38,24 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @Autowired
     private MessageSource messageSource;
 
-    @ExceptionHandler(EntidadeEmUsoException.class)
-    public ResponseEntity<Object> handleEntidadeEmUsoException(EntidadeEmUsoException ex, WebRequest webRequest) {
+    @ExceptionHandler(EntityInUseException.class)
+    public ResponseEntity<Object> handleEntidadeEmUsoException(EntityInUseException ex, WebRequest webRequest) {
         HttpStatus status = HttpStatus.CONFLICT;
         Problem problem = createProblemBuilder(status, ProblemType.ENTIDADE_EM_USO, ex.getMessage()).build();
 
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, webRequest);
     }
 
-    @ExceptionHandler(NegocioException.class)
-    public ResponseEntity<Object> handleNegocioException(NegocioException ex, WebRequest webRequest) {
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<Object> handleNegocioException(BusinessException ex, WebRequest webRequest) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         Problem problem = createProblemBuilder(status, ProblemType.ERRO_NEGOCIO, ex.getMessage()).build();
 
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, webRequest);
     }
 
-    @ExceptionHandler(EntidadeNaoEncontradaException.class)
-    public ResponseEntity<Object> handleEntidadeNaoEncontradoException(EntidadeNaoEncontradaException ex, WebRequest webRequest) {
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<Object> handleEntidadeNaoEncontradoException(EntityNotFoundException ex, WebRequest webRequest) {
         HttpStatus status = HttpStatus.NOT_FOUND;
 
         Problem problem = createProblemBuilder(status, ProblemType.RECURSO_NAO_ENCONTRADO, ex.getMessage()).build();
@@ -63,8 +63,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, webRequest);
     }
 
-    @ExceptionHandler(ValidationRestauranteException.class)
-    public ResponseEntity<Object> handleValidationRestauranteException(ValidationRestauranteException ex, WebRequest webRequest) {
+    @ExceptionHandler(ValidationRestaurantException.class)
+    public ResponseEntity<Object> handleValidationRestauranteException(ValidationRestaurantException ex, WebRequest webRequest) {
         List<Problem.Field> fields = getFields(ex.getBindingResult());
         HttpStatus status = HttpStatus.BAD_REQUEST;
 

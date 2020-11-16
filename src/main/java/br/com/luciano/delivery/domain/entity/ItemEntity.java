@@ -20,10 +20,10 @@ public class ItemEntity extends IdBase {
 	private Integer quantity;
 	@Column(name = "observacao")
 	private String note;
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="pedido_id", nullable = false)
 	private OrderEntity order;
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="produto_id", nullable = false)
 	private ProductEntity product;
 

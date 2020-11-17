@@ -1,6 +1,7 @@
 package br.com.luciano.delivery.domain.service;
 
 import br.com.luciano.delivery.api.model.PaymentResponse;
+import br.com.luciano.delivery.core.client.PaymentClient;
 import br.com.luciano.delivery.domain.entity.*;
 import br.com.luciano.delivery.domain.exception.PaymentInvalidException;
 import br.com.luciano.delivery.domain.repository.OrderRepository;
@@ -20,7 +21,7 @@ public class OrderService {
     private final UserService userService;
     private final RestaurantService restaurantService;
     private final PaymentService paymentService;
-    private final HttpClientService httpClientService;
+    private final PaymentClient paymentClient;
 
     @Transactional
     public OrderEntity emit(OrderEntity newOrder) {
@@ -41,7 +42,7 @@ public class OrderService {
         RestaurantEntity restaurantEntity = restaurantService.findOrFail(newOrder.getRestaurant().getId());
         PaymentEntity paymentEntity = paymentService.findByIdOrFail(newOrder.getPayment().getId());
 
-        PaymentResponse response = this.httpClientService.find(paymentEntity.getNumber());
+        PaymentResponse response = this.paymentClient.getPayment(paymentEntity.getNumber());
 
         if (!response.isAuthorized()) {
             throw new PaymentInvalidException();

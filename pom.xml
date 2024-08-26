@@ -20,7 +20,7 @@
     <version.camunda>7.7.0</version.camunda>
     <version.commons-lang3>3.4</version.commons-lang3>
     <version.modelmapper>2.3.0</version.modelmapper>
-    <version.springfox-swagger2>2.9.2</version.springfox-swagger2>
+    <version.springfox-swagger2>2.10.0</version.springfox-swagger2>
   </properties>
 
   <dependencies>
